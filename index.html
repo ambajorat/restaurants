@@ -397,15 +397,18 @@ listeEl.addEventListener('click', e=>{
 function mapWc(t){ return (t==='yes'||t==='limited'||t==='no') ? t : 'unknown'; }
 function nah(a,b){ return Math.abs(a.lat-b.lat)<0.0006 && Math.abs(a.lon-b.lon)<0.0009; }
 async function overpass(query){
-  let lastErr;
-  for(const url of OVERPASS){
-    try{
-      const res = await fetch(url, {method:'POST', body:'data='+encodeURIComponent(query)});
-      if(!res.ok){ lastErr='HTTP '+res.status; continue; }
-      return await res.json();
-    }catch(e){ lastErr=e.message; }
-  }
-  throw new Error(lastErr||'nicht erreichbar');
+  const body = 'data='+encodeURIComponent(query);
+  // Alle Spiegel parallel abfragen, schnellste gültige Antwort gewinnt
+  const versuche = OVERPASS.map(url=>{
+    const ctrl = new AbortController();
+    const to = setTimeout(()=>ctrl.abort(), 12000);
+    return fetch(url, {method:'POST', body, signal:ctrl.signal}).then(r=>{
+      clearTimeout(to);
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    });
+  });
+  return await Promise.any(versuche);
 }
 function elementeZuEintraegen(elements, vorhanden){
   const out = [];
