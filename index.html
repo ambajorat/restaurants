@@ -115,6 +115,32 @@ header h1{
 .highlights{color:var(--gedimmt); font-style:italic; font-size:15px; margin:0 0 6px}
 .kriterien{font-size:13px; color:var(--gedimmt); letter-spacing:.01em; margin:0 0 4px}
 .von-zehn{white-space:nowrap}
+.nutzer{font-size:14px; margin:0 0 6px; color:var(--tinte)}
+.nutzer .gold{color:var(--akzent); letter-spacing:1px}
+.nutzer .grau{color:var(--linie); letter-spacing:1px}
+.nutzer b{color:var(--akzent)}
+.bewlink{font-size:15px; font-weight:600; color:var(--akzent); background:none; border:none; cursor:pointer; padding:0; white-space:nowrap}
+.bewlink:hover{text-decoration:underline}
+.bewpanel{margin-top:14px; padding:16px; background:var(--leicht); border:1px solid var(--linie); border-radius:10px}
+.kommliste{display:flex; flex-direction:column; gap:12px; margin-bottom:14px}
+.komm{border-bottom:1px solid var(--linie); padding-bottom:10px}
+.komm:last-child{border-bottom:none; padding-bottom:0}
+.kkopf{display:flex; align-items:center; gap:8px; font-size:14px}
+.kstars{color:var(--akzent); letter-spacing:1px}
+.kdatum{color:var(--gedimmt); font-size:12px; margin-left:auto}
+.komm p{margin:4px 0 0; font-size:15px}
+.knone{color:var(--gedimmt); font-style:italic; margin:0 0 14px}
+.bewform{display:flex; flex-direction:column; gap:8px}
+.sternwahl{display:flex; gap:2px}
+.stern{font-size:26px; line-height:1; background:none; border:none; color:var(--akzent); cursor:pointer; padding:0 2px}
+.bewform input,.bewform textarea{
+  font:inherit; font-size:15px; padding:8px 10px; border-radius:6px;
+  border:1px solid var(--linie); background:var(--papier); color:var(--tinte); width:100%;
+}
+.bewfoot{display:flex; align-items:center; gap:12px}
+.bewfoot .knopf{border:none; cursor:pointer}
+.bewstatus{font-size:13px; color:var(--akzent)}
+.bewhinweis{font-size:12px; color:var(--gedimmt); margin:10px 0 0}
 .fuss{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px}
 .quelle{font-size:13px; color:var(--gedimmt)}
 .aktionen{display:flex; align-items:center; gap:14px}
@@ -169,14 +195,15 @@ footer.seite a{color:var(--akzent)}
     <button class="chip" data-quelle="web">recherchiert</button>
     <button class="chip" data-quelle="osm">aus OpenStreetMap</button>
   </div>
-  <div class="chips" id="wcChips">
-    <button class="chip" data-wc="" aria-pressed="true">WC egal</button>
-    <button class="chip" data-wc="yes">barrierefrei</button>
-    <button class="chip" data-wc="limited">eingeschränkt</button>
-    <button class="chip" data-wc="no">nicht erreichbar</button>
+  <div class="chips" id="scoreChips">
+    <button class="chip" data-min="0" aria-pressed="true">alle</button>
+    <button class="chip" data-min="5">5+</button>
+    <button class="chip" data-min="6">6+</button>
+    <button class="chip" data-min="7">7+</button>
+    <button class="chip" data-min="8">8+</button>
   </div>
   <input type="search" id="suche" placeholder="Name oder Stadtteil …" autocomplete="off" aria-label="Suche">
-  <label class="schalter"><input type="checkbox" id="nurWC"> nur barrierefreies WC</label>
+  <label class="schalter"><input type="checkbox" id="nurGeeignet"> nur geeignete (ab 6)</label>
 </div>
 
 <div class="websuche">
@@ -314,15 +341,16 @@ function fitAlle(){
 function setStadt(name, liste, hamburg){
   stadtName = name; istHamburg = !!hamburg;
   DATA = liste;
+  DATA.forEach(r=>r.stadt = name);
   baueMarker();
   // Quelle-Chips getestet/recherchiert nur für Hamburg sinnvoll
   document.querySelector('#quelleChips [data-quelle="tested"]').hidden = !istHamburg;
   document.querySelector('#quelleChips [data-quelle="web"]').hidden = !istHamburg;
   document.querySelector('#quelleChips [data-quelle="osm"]').hidden = istHamburg ? false : true;
   // Filter zurücksetzen
-  fQuelle=''; fWc=''; document.getElementById('nurWC').checked=false; document.getElementById('suche').value='';
+  fQuelle=''; fMin=0; document.getElementById('nurGeeignet').checked=false; document.getElementById('suche').value='';
   document.querySelectorAll('#quelleChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.quelle===''));
-  document.querySelectorAll('#wcChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.wc===''));
+  document.querySelectorAll('#scoreChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.min==='0'));
   // OSM-Nachladen nur in Hamburg (sonst sind Daten bereits OSM)
   const osmWrap = document.querySelector('.websuche');
   osmWrap.style.display = istHamburg ? 'flex' : 'none';
@@ -334,18 +362,19 @@ function setStadt(name, liste, hamburg){
   render();
   if(document.getElementById('kartenBox').style.display !== 'none'){ setTimeout(()=>{map.invalidateSize(); fitAlle();},40); }
   else fitAlle();
+  if(bewertungAktiv()) ladeBewertungen(name).then(render);
 }
 function kopf(){
   const ut = document.getElementById('untertitel');
   const st = document.getElementById('stats');
+  const nG = DATA.filter(r=>{const s=scoreOf(r); return s!==null && s>=6;}).length;
   if(istHamburg){
     ut.textContent = 'In Hamburg von André selbst im Rollstuhl getestet oder recherchiert – geprüft auf Zugang, Sitzen und eine erreichbare Toilette.';
-    const nT = DATA.filter(r=>r.src==='tested').length, nW = DATA.filter(r=>r.wc==='yes').length;
-    st.innerHTML = `${DATA.length} Restaurants in Hamburg &nbsp;·&nbsp; ${nT} selbst getestet &nbsp;·&nbsp; ${nW}× barrierefreies WC`;
+    const nT = DATA.filter(r=>r.src==='tested').length;
+    st.innerHTML = `${DATA.length} Restaurants in Hamburg &nbsp;·&nbsp; ${nG} geeignet (ab 6) &nbsp;·&nbsp; ${nT} selbst getestet`;
   } else {
     ut.textContent = `Als rollstuhlgerecht markierte Restaurants in ${stadtName} – Community-Daten aus OpenStreetMap / Wheelmap, nicht persönlich geprüft.`;
-    const nW = DATA.filter(r=>r.wc==='yes').length;
-    st.innerHTML = `${DATA.length} Restaurants in ${stadtName} &nbsp;·&nbsp; ${nW}× mit barrierefreiem WC &nbsp;·&nbsp; Quelle: OpenStreetMap / Wheelmap`;
+    st.innerHTML = `${DATA.length} Restaurants in ${stadtName} &nbsp;·&nbsp; ${nG} geeignet (ab 6) &nbsp;·&nbsp; Quelle: OpenStreetMap / Wheelmap`;
   }
 }
 
@@ -360,7 +389,7 @@ document.getElementById('ansichtChips').addEventListener('click', e=>{
 });
 
 /* ---- Filter ---- */
-let fQuelle = '', fWc = '';
+let fQuelle = '', fMin = 0;
 function bindChips(id, cb){
   document.getElementById(id).addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b || b.hidden) return;
@@ -369,17 +398,17 @@ function bindChips(id, cb){
   });
 }
 bindChips('quelleChips', b=>fQuelle=b.dataset.quelle);
-bindChips('wcChips', b=>fWc=b.dataset.wc);
+bindChips('scoreChips', b=>fMin=+b.dataset.min);
 const sucheEl = document.getElementById('suche');
-const nurWCEl = document.getElementById('nurWC');
+const nurGeeignetEl = document.getElementById('nurGeeignet');
 sucheEl.addEventListener('input', render);
-nurWCEl.addEventListener('change', render);
+nurGeeignetEl.addEventListener('change', render);
 
 /* ---- Rendern ---- */
 const listeEl = document.getElementById('liste');
 function render(){
   const q = sucheEl.value.trim().toLowerCase();
-  const wcWanted = nurWCEl.checked ? 'yes' : fWc;
+  const minWanted = nurGeeignetEl.checked ? 6 : fMin;
   listeEl.innerHTML = '';
   // Ranking: nach Punkten absteigend, Einträge ohne Bewertung ans Ende
   const order = DATA.map((_,i)=>i).sort((a,b)=>{
@@ -389,18 +418,26 @@ function render(){
   let shown = 0;
   order.forEach(i=>{
     const r = DATA[i];
+    const s = scoreOf(r);
     const ok = (!q || r.name.toLowerCase().includes(q) || (r.district||'').toLowerCase().includes(q))
       && (!fQuelle || r.src===fQuelle)
-      && (!wcWanted || r.wc===wcWanted);
+      && (minWanted===0 || (s!==null && s>=minWanted));
     if(markers[i]) markers[i].setStyle({opacity: ok?1:0, fillOpacity: ok?.95:0});
     if(markers[i] && markers[i]._path) markers[i]._path.style.pointerEvents = ok?'':'none';
     if(!ok) return;
     shown++;
-    const s = scoreOf(r);
-    const [pillCls,pillTxt] = WC_PILL[r.wc];
-    const dimmed = (s===null || s<4) ? ' abgelehnt' : '';
+    const geeignet = (s!==null && s>=6);
+    const pillCls = geeignet ? 'ja' : 'nein';
+    const pillTxt = s===null ? 'ungeprüft' : geeignet ? 'geeignet' : 'bedingt';
+    const dimmed = geeignet ? '' : ' abgelehnt';
     const hi = [r.sitzen && 'Sitzen: '+r.sitzen, r.toilette && 'Toilette: '+r.toilette].filter(Boolean).join(' · ');
     const route = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
+    const agg = bewertungAktiv() ? aggregat(restKey(r)) : null;
+    const nutzerLine = bewertungAktiv()
+      ? `<p class="nutzer">${agg ? sterneVoll(agg.avg)+' <b>'+agg.avg+'</b> · '+agg.n+' Nutzerbewertung'+(agg.n>1?'en':'') : 'Noch keine Nutzerbewertung'}</p>`
+      : '';
+    const bewBtn = bewertungAktiv() ? `<button class="bewlink bew-toggle" data-idx="${i}">★ Bewerten / Kommentar</button>` : '';
+    const bewPanel = bewertungAktiv() ? bewPanelHTML(r,i) : '';
     const el = document.createElement('article');
     el.className = 'ticket'+dimmed;
     el.innerHTML = `
@@ -415,17 +452,21 @@ function render(){
         <p class="text">${r.zugang || ''}</p>
         ${hi ? `<p class="highlights">${hi}</p>` : ''}
         <p class="kriterien">${kriterienZeile(r)}</p>
+        ${nutzerLine}
         <div class="fuss">
           <span class="quelle">${SRC_LABEL[r.src]||''}</span>
           <div class="aktionen">
             <button class="karte" data-idx="${i}">🗺️ Auf Karte</button>
+            ${bewBtn}
             <a class="knopf" href="${route}" target="_blank" rel="noopener">Route</a>
           </div>
         </div>
+        ${bewPanel}
       </div>`;
     listeEl.appendChild(el);
   });
   if(shown===0) listeEl.innerHTML = '<div class="leer">Keine Treffer – Filter anpassen.</div>';
+  if(offenesPanel!=null){ const p=listeEl.querySelector('.bewpanel[data-idx="'+offenesPanel+'"]'); if(p){ p.hidden=false; } }
 }
 listeEl.addEventListener('click', e=>{
   const b = e.target.closest('.karte'); if(!b) return;
@@ -531,6 +572,115 @@ osmBtn.addEventListener('click', async ()=>{
     osmStatus.textContent = neu.length ? `${neu.length} weitere aus OpenStreetMap ergänzt (Community-Angaben – bitte vorab prüfen).` : 'Keine zusätzlichen Einträge gefunden.';
     osmBtn.style.display = 'none';
   }catch(e){ osmStatus.textContent = 'OpenStreetMap gerade nicht erreichbar – später erneut versuchen.'; osmBtn.disabled = false; }
+});
+
+/* =====================================================================
+   NUTZER-BEWERTUNGEN (Sterne + Kommentare, ohne Konto) via Supabase
+   ---------------------------------------------------------------------
+   EINRICHTUNG (einmalig, kostenlos):
+   1. Auf supabase.com ein kostenloses Projekt anlegen.
+   2. Im SQL-Editor dieses Snippet ausführen:
+        create table bewertungen (
+          id bigint generated always as identity primary key,
+          restaurant_key text not null,
+          stadt text,
+          name text,
+          sterne int not null check (sterne between 1 and 5),
+          kommentar text,
+          created_at timestamptz default now()
+        );
+        alter table bewertungen enable row level security;
+        create policy "lesen" on bewertungen for select using (true);
+        create policy "schreiben" on bewertungen for insert with check (
+          sterne between 1 and 5 and char_length(coalesce(kommentar,'')) < 1000
+        );
+   3. In Project Settings → API die "Project URL" und den "anon public"-Key
+      kopieren und hier unten eintragen. Der anon-Key ist öffentlich und darf
+      im Code stehen. Fertig – ab dann erscheinen Sterne & Kommentarfelder.
+   ===================================================================== */
+const SUPABASE_URL = "";   // z.B. https://deinprojekt.supabase.co
+const SUPABASE_KEY = "";   // anon public Key
+
+const bewertungAktiv = () => !!(SUPABASE_URL && SUPABASE_KEY);
+let cityBew = {};          // restaurant_key -> [ {sterne,name,kommentar,created_at} ]
+let offenesPanel = null;   // welches Panel nach dem Neu-Rendern offen bleibt
+
+function restKey(r){ return (r.stadt||stadtName||'Hamburg').toLowerCase()+'|'+r.name.toLowerCase().trim(); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function datum(iso){ try{ return new Date(iso).toLocaleDateString('de-DE'); }catch(e){ return ''; } }
+function sterneVoll(v){ const n=Math.round(v); return '<span class="gold">'+'★'.repeat(n)+'</span><span class="grau">'+'☆'.repeat(5-n)+'</span>'; }
+function aggregat(key){
+  const list = cityBew[key]||[];
+  if(!list.length) return null;
+  return {avg: Math.round(list.reduce((a,b)=>a+b.sterne,0)/list.length*10)/10, n:list.length};
+}
+async function ladeBewertungen(stadt){
+  cityBew = {};
+  if(!bewertungAktiv()) return;
+  try{
+    const url = `${SUPABASE_URL}/rest/v1/bewertungen?select=restaurant_key,sterne,name,kommentar,created_at&stadt=eq.${encodeURIComponent(stadt)}&order=created_at.desc`;
+    const res = await fetch(url, {headers:{apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY}});
+    if(!res.ok) return;
+    (await res.json()).forEach(x=>{ (cityBew[x.restaurant_key] ||= []).push(x); });
+  }catch(e){}
+}
+function bewPanelHTML(r,i){
+  const list = cityBew[restKey(r)]||[];
+  const komms = list.length ? list.map(x=>`
+      <div class="komm">
+        <div class="kkopf"><span class="kstars">${'★'.repeat(x.sterne)+'☆'.repeat(5-x.sterne)}</span> <b>${esc(x.name||'Gast')}</b> <span class="kdatum">${datum(x.created_at)}</span></div>
+        ${x.kommentar?`<p>${esc(x.kommentar)}</p>`:''}
+      </div>`).join('') : '<p class="knone">Noch keine Kommentare – sei die/der Erste.</p>';
+  const sterne = [1,2,3,4,5].map(v=>`<button type="button" class="stern" data-idx="${i}" data-v="${v}" aria-label="${v} Sterne">☆</button>`).join('');
+  return `
+    <div class="bewpanel" data-idx="${i}" hidden>
+      <div class="kommliste">${komms}</div>
+      <div class="bewform">
+        <div class="sternwahl" role="radiogroup" aria-label="Deine Sterne">${sterne}</div>
+        <input type="text" class="bewname" data-idx="${i}" placeholder="Name (optional)" maxlength="60">
+        <textarea class="bewtext" data-idx="${i}" placeholder="Dein Kommentar – z. B. Erfahrung mit Zugang oder WC" maxlength="1000" rows="2"></textarea>
+        <div class="bewfoot"><button class="knopf bew-submit" data-idx="${i}">Absenden</button><span class="bewstatus" data-idx="${i}"></span></div>
+      </div>
+      <p class="bewhinweis">Bewertungen sind öffentlich sichtbar. Bitte fair bleiben und keine persönlichen Daten Dritter posten.</p>
+    </div>`;
+}
+async function sendeBewertung(i, sterne, name, text, statusEl){
+  if(!sterne){ statusEl.textContent='Bitte zuerst Sterne wählen.'; return; }
+  const r = DATA[i];
+  const body = {restaurant_key:restKey(r), stadt:r.stadt||stadtName, name:(name||'').slice(0,60), sterne, kommentar:(text||'').slice(0,1000)};
+  statusEl.textContent='Wird gesendet …';
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/bewertungen`, {
+      method:'POST',
+      headers:{apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json', Prefer:'return=minimal'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok) throw 0;
+    (cityBew[body.restaurant_key] ||= []).unshift({sterne, name:body.name, kommentar:body.kommentar, created_at:new Date().toISOString()});
+    offenesPanel = i;
+    render();
+  }catch(e){ statusEl.textContent='Konnte nicht gesendet werden – bitte später erneut.'; }
+}
+// Klicks im Panel (Sterne wählen, absenden, auf-/zuklappen)
+listeEl.addEventListener('click', e=>{
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.classList.contains('bew-toggle')){
+    const p = listeEl.querySelector('.bewpanel[data-idx="'+t.dataset.idx+'"]');
+    if(p){ p.hidden = !p.hidden; offenesPanel = p.hidden ? null : +t.dataset.idx; }
+    return;
+  }
+  if(t.classList.contains('stern')){
+    const p = listeEl.querySelector('.bewpanel[data-idx="'+t.dataset.idx+'"]');
+    const v = +t.dataset.v; p.dataset.stars = v;
+    p.querySelectorAll('.stern').forEach(s=>s.textContent = (+s.dataset.v<=v)?'★':'☆');
+    return;
+  }
+  if(t.classList.contains('bew-submit')){
+    const idx = +t.dataset.idx;
+    const p = listeEl.querySelector('.bewpanel[data-idx="'+idx+'"]');
+    sendeBewertung(idx, +(p.dataset.stars||0), p.querySelector('.bewname').value, p.querySelector('.bewtext').value, p.querySelector('.bewstatus'));
+    return;
+  }
 });
 
 /* Start: Hamburg */
