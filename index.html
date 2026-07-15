@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Barrierefreie Restaurants in Hamburg – Plötzlich Querschnitt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+:root{
+  --papier:#0d0d0d; --leicht:#1a1a1a; --tinte:#f5f5f2;
+  --akzent:#ff8a2a; --akzent-dunkel:#e0721a;
+  --linie:#2e2e2c; --gedimmt:#9a9a94; --gruen:#8fbf9a;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--papier); color:var(--tinte);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",sans-serif;
+  font-size:17px; line-height:1.65;
+}
+.hülle{max-width:760px; margin:0 auto; padding:36px 20px 90px}
+
+/* Kopf im Blog-Stil */
+.blogzeile{font-size:14px; letter-spacing:.04em; text-transform:uppercase; margin:0 0 6px}
+.zurueck{
+  display:inline-block; color:var(--akzent); text-decoration:none;
+  border:1px solid var(--akzent); border-radius:999px;
+  padding:6px 14px; font-size:13px; text-transform:none; letter-spacing:0;
+}
+.zurueck:hover{background:var(--akzent); color:#0d0d0d}
+header h1{
+  font-family:Cardo,Georgia,"Times New Roman",serif;
+  font-weight:700; font-size:clamp(32px,5vw,46px);
+  letter-spacing:-0.01em; margin:0 0 6px; line-height:1.15;
+}
+.untertitel{margin:0 0 8px; color:var(--gedimmt); font-size:17px}
+.stats{font-size:13.5px; color:var(--gedimmt); margin:0 0 30px}
+
+.ansicht-zeile{margin:0 0 12px}
+#karte{
+  height:520px; border:1px solid var(--linie); border-radius:10px;
+  overflow:hidden; margin-bottom:8px;
+}
+.karten-hinweis{font-size:13px; color:var(--gedimmt); margin:0 0 24px; text-align:center}
+.karten-popup h4{margin:0 0 4px; font-family:Cardo,Georgia,serif; font-size:16px; color:#0d0d0d}
+.karten-popup p{margin:0 0 6px; font-size:13px; color:#333}
+.karten-popup a{color:var(--akzent-dunkel); font-weight:600; text-decoration:none; font-size:13px}
+.karten-popup .p-score{display:inline-block; background:var(--akzent); color:#0d0d0d;
+  font-weight:700; padding:2px 8px; border-radius:999px; font-size:12px; margin-right:6px}
+
+/* Filterleiste */
+.filter{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  padding:14px 0; border-top:1px solid var(--linie);
+  border-bottom:1px solid var(--linie); margin-bottom:30px;
+}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{
+  font-size:14px; padding:6px 12px; border-radius:999px;
+  border:1px solid var(--linie); background:transparent;
+  color:var(--tinte); cursor:pointer;
+}
+.chip[aria-pressed="true"]{background:var(--akzent); color:#0d0d0d; border-color:var(--akzent)}
+.filter select,.filter input[type=search]{
+  font:inherit; font-size:14px; padding:7px 10px; border-radius:6px;
+  border:1px solid var(--linie); background:var(--leicht); color:var(--tinte);
+}
+.filter input[type=search]{flex:1; min-width:140px}
+.schalter{display:flex; align-items:center; gap:7px; font-size:14px; cursor:pointer; white-space:nowrap}
+.schalter input{accent-color:var(--akzent); width:16px; height:16px}
+.chip:focus-visible,.filter select:focus-visible,.filter input:focus-visible,
+.schalter input:focus-visible,.knopf:focus-visible,.karte:focus-visible{
+  outline:2px solid var(--akzent); outline-offset:2px;
+}
+
+/* Einträge im Artikel-Stil des Blogs */
+.liste{display:flex; flex-direction:column}
+.ticket{display:flex; gap:20px; padding:26px 0; border-bottom:1px solid var(--linie)}
+.abriss{flex:0 0 64px; display:flex; flex-direction:column; align-items:center; gap:2px; padding-top:6px}
+.punkte{font-family:Cardo,Georgia,serif; font-weight:700; font-size:34px; line-height:1; color:var(--akzent)}
+.ticket.abgelehnt .punkte{color:var(--gedimmt)}
+.von-zehn{font-size:12px; color:var(--gedimmt)}
+.status{margin-top:8px; font-size:11px; padding:2px 8px; border-radius:999px; text-align:center}
+.status.ja{background:#1e2b21; color:var(--gruen)}
+.status.nein{background:var(--leicht); color:var(--gedimmt)}
+
+.inhalt{flex:1; min-width:0}
+.inhalt h2{font-family:Cardo,Georgia,"Times New Roman",serif; font-weight:700; font-size:24px; margin:0 0 4px; line-height:1.25}
+.meta{font-size:14px; color:var(--akzent); margin:0 0 10px}
+.inhalt p.text{margin:0 0 10px; font-size:16px}
+.highlights{color:var(--gedimmt); font-style:italic; font-size:15px; margin:0 0 6px}
+.fuss{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px}
+.quelle{font-size:13px; color:var(--gedimmt)}
+.aktionen{display:flex; align-items:center; gap:14px}
+.karte{font-size:15px; font-weight:600; text-decoration:none; color:var(--akzent); white-space:nowrap; background:none; border:none; cursor:pointer; padding:0}
+.karte:hover{text-decoration:underline}
+.knopf{font-size:15px; font-weight:600; text-decoration:none; color:#0d0d0d; background:var(--akzent); padding:8px 16px; border-radius:6px}
+.knopf:hover{background:var(--akzent-dunkel)}
+.websuche{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:-14px 0 26px}
+.websuche .knopf{border:none; cursor:pointer}
+.websuche .knopf[disabled]{opacity:.6; cursor:progress}
+.leer{text-align:center; padding:60px 20px; color:var(--gedimmt); background:var(--leicht); border:1px dashed var(--linie); border-radius:10px}
+footer.seite{margin-top:40px; padding-top:16px; border-top:1px solid var(--linie); font-size:13.5px; color:var(--gedimmt)}
+footer.seite a{color:var(--akzent)}
+
+@media (max-width:560px){
+  .ticket{flex-direction:column; gap:10px}
+  .abriss{flex-direction:row; padding-top:0}
+  .status{margin-top:0; margin-left:auto}
+}
+</style>
+</head>
+<body>
+<div class="hülle">
+<header>
+  <p class="blogzeile"><a class="zurueck" href="https://ploetzlich-querschnitt.de">&larr; Zur&uuml;ck zu Pl&ouml;tzlich Querschnitt</a></p>
+  <h1>Barrierefreie Restaurants in Hamburg</h1>
+  <p class="untertitel">Restaurants, die ich selbst im Rollstuhl getestet oder recherchiert habe – geprüft auf Zugang, entspanntes Sitzen und eine erreichbare Toilette.</p>
+  <p class="stats" id="stats"></p>
+</header>
+
+<div class="ansicht-zeile">
+  <div class="chips" id="ansichtChips">
+    <button class="chip" data-ansicht="liste" aria-pressed="true">📋 Liste</button>
+    <button class="chip" data-ansicht="karte">🗺️ Karte</button>
+  </div>
+</div>
+
+<div id="kartenBox" style="display:none">
+  <div id="karte"></div>
+  <p class="karten-hinweis">Farbe = Toilette: <span style="color:var(--akzent)">●</span> barrierefrei &nbsp;·&nbsp; <span style="color:var(--gedimmt)">●</span> eingeschränkt / nicht erreichbar / unbekannt</p>
+</div>
+
+<div class="filter" role="group" aria-label="Filter">
+  <div class="chips" id="quelleChips">
+    <button class="chip" data-quelle="" aria-pressed="true">alles</button>
+    <button class="chip" data-quelle="tested">selbst getestet</button>
+    <button class="chip" data-quelle="web">recherchiert</button>
+    <button class="chip" data-quelle="osm">aus OpenStreetMap</button>
+  </div>
+  <div class="chips" id="wcChips">
+    <button class="chip" data-wc="" aria-pressed="true">WC egal</button>
+    <button class="chip" data-wc="yes">barrierefrei</button>
+    <button class="chip" data-wc="limited">eingeschränkt</button>
+    <button class="chip" data-wc="no">nicht erreichbar</button>
+  </div>
+  <input type="search" id="suche" placeholder="Name oder Stadtteil …" autocomplete="off" aria-label="Suche">
+  <label class="schalter"><input type="checkbox" id="nurWC"> nur barrierefreies WC</label>
+</div>
+
+<div class="websuche">
+  <button id="osmBtn" class="knopf">＋ Weitere aus OpenStreetMap / Wheelmap laden</button>
+  <span id="osmStatus" class="quelle"></span>
+</div>
+
+<div class="liste" id="liste"></div>
+
+<footer class="seite">
+  „Selbst getestet" sind eigene Erfahrungen, „recherchiert" stammt aus öffentlichen Quellen (u. a. hamburg.de, Genuss-Guide) und ist noch nicht persönlich geprüft.
+  Alle Angaben ohne Gewähr – Zugang und Toilette vor dem Besuch im Zweifel telefonisch gegenprüfen.
+  Teil von <a href="https://ploetzlich-querschnitt.de">ploetzlich-querschnitt.de</a> · by André M. Bajorat ·
+  Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, Ortssuche <a href="https://nominatim.openstreetmap.org">Nominatim</a>
+</footer>
+</div>
+
+<script>
+const DATA = [
+  {name:"Bullerei", district:"Sternschanze", lat:53.5631311, lon:9.9661488, src:"tested", wc:"yes",
+   zugang:"Einfach, nur der Hof ist Kopfsteinpflaster", sitzen:"Sehr gut möglich", toilette:"Komplett barrierefrei"},
+  {name:"Mutterland (Stammhaus)", district:"Altstadt / Hbf", lat:53.5541117, lon:10.0042820, src:"tested", wc:"no",
+   zugang:"Einfach, kleine Stufe", sitzen:"Sehr gut möglich", toilette:"Im 1. OG – unmöglich erreichbar. Nächstes WC im Hauptbahnhof"},
+  {name:"Hobenköök", district:"HafenCity", lat:53.5433371, lon:10.0081133, src:"tested", wc:"yes",
+   zugang:"Einfach, kleine Rampe", sitzen:"Sehr gut möglich", toilette:"Komplett barrierefrei"},
+  {name:"NENI", district:"HafenCity", lat:53.5423139, lon:9.9983570, src:"tested", wc:"yes",
+   zugang:"Einfach, über den Fahrstuhl des 25hours Hafenamt", sitzen:"Sehr gut möglich", toilette:"Komplett barrierefrei"},
+  {name:"ELMA Speisekneipe", district:"Altona-Nord", lat:53.5574694, lon:9.9369861, src:"tested", wc:"yes",
+   zugang:"Einfach, über einen Mini-Fahrstuhl zum Seiteneingang", sitzen:"Sehr gut möglich", toilette:"Komplett barrierefrei"},
+  {name:"HENRIKS", district:"Rotherbaum", lat:53.5635549, lon:9.9921098, src:"tested", wc:"limited",
+   zugang:"Einfach", sitzen:"Sehr gut möglich", toilette:"Im Nachbarhaus bei SAP"},
+  {name:"Henssler & Henssler", district:"Altona-Altstadt", lat:53.5445995, lon:9.9430573, src:"tested", wc:"no",
+   zugang:"Durch die Küche hinter dem Haus", sitzen:"Sehr gut möglich", toilette:"Zugang, aber keine Kabine erreichbar"},
+  {name:"el Local", district:"Nienstedten", lat:53.5577031, lon:9.8284239, src:"tested", wc:"limited",
+   zugang:"Etwas beschwerlich entlang der Tennisfelder", sitzen:"Sehr gut möglich", toilette:"Eng in der normalen Kabine"},
+  {name:"Zollenspieker Fährhaus", district:"Kirchwerder", lat:53.3986711, lon:10.1846297, src:"tested", wc:"yes",
+   zugang:"Gut, aber Kopfsteinpflaster auf dem Hof", sitzen:"Sehr gut möglich", toilette:"Mit dem Fahrstuhl im Keller erreichbar – barrierefrei"},
+  {name:"Jin Gui (Hotel Tortue)", district:"Neustadt", lat:53.5514422, lon:9.9861835, src:"tested", wc:"yes",
+   zugang:"Über das Hotel mit dem Fahrstuhl", sitzen:"Sehr gut möglich", toilette:"Im Hotel, komplett barrierefrei"},
+  {name:"Neumanns Bistro & Weinbar", district:"St. Georg", lat:53.5592092, lon:10.0131691, src:"tested", wc:"no",
+   zugang:"Gut möglich", sitzen:"Sehr gut möglich", toilette:"Zugang eng, Kabine nicht erreichbar"},
+  {name:"Ceviche Bar", district:"Hoheluft-Ost", lat:53.5834668, lon:9.9793621, src:"tested", wc:"unknown",
+   zugang:"Auf meiner Liste – Detailnotiz folgt", sitzen:"", toilette:""},
+  {name:"Via dei Mille", district:"Hoheluft-Ost / Eppendorf", lat:53.5851526, lon:9.9807583, src:"tested", wc:"unknown",
+   zugang:"Auf meiner Liste – Detailnotiz folgt", sitzen:"", toilette:""},
+  {name:"Das Loewen", district:"Eppendorf", lat:53.5838997, lon:9.9785244, src:"tested", wc:"unknown",
+   zugang:"Auf meiner Liste – Detailnotiz folgt", sitzen:"", toilette:""},
+  {name:"Küchenfreunde (Lehmweg)", district:"Hoheluft-Ost", lat:53.5822328, lon:9.9794408, src:"tested", wc:"unknown",
+   zugang:"Auf meiner Liste – Detailnotiz folgt", sitzen:"", toilette:""},
+  {name:"T.R.U.D.E.", district:"Barmbek-Nord", lat:53.5850370, lon:10.0448762, src:"web", wc:"unknown",
+   zugang:"Barrierefrei erreichbar (Industriedenkmal)", sitzen:"", toilette:"Laut Quelle barrierefrei – bitte vorab prüfen"},
+  {name:"Petit Bonheur", district:"Neustadt", lat:53.5504192, lon:9.9755853, src:"web", wc:"yes",
+   zugang:"Barrierefrei", sitzen:"", toilette:"Rollstuhltoilette vorhanden (laut Quelle)"},
+  {name:"Altes Mädchen", district:"Schanzenviertel", lat:53.5631904, lon:9.9681115, src:"web", wc:"yes",
+   zugang:"Barrierefrei", sitzen:"", toilette:"Rollstuhltoilette vorhanden (laut Quelle)"},
+  {name:"Café Leonar", district:"Rotherbaum", lat:53.5697536, lon:9.9840813, src:"web", wc:"yes",
+   zugang:"Barrierefrei", sitzen:"", toilette:"Rollstuhlgerechtes WC, Schlüssel am Tresen (laut Quelle)"},
+  {name:"Dulf's Burger", district:"Winterhude", lat:53.5827757, lon:10.0172024, src:"web", wc:"yes",
+   zugang:"Komplett barrierefrei (laut Quelle)", sitzen:"", toilette:"Barrierefrei (laut Quelle)"}
+];
+
+const WC_GLYPH = {yes:"✓", limited:"~", no:"✗", unknown:"?"};
+const WC_PILL  = {yes:["ja","WC frei"], limited:["nein","WC eng"], no:["nein","kein WC"], unknown:["nein","WC ?"]};
+const WC_COLOR = {yes:"#ff8a2a", limited:"#ff8a2a", no:"#9a9a94", unknown:"#9a9a94"};
+const SRC_LABEL = {tested:"Selbst getestet", web:"Recherchiert", osm:"OpenStreetMap / Wheelmap"};
+
+/* ---- Karte ---- */
+const map = L.map('karte', {scrollWheelZoom:true});
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap-Mitwirkende'}).addTo(map);
+const markers = {};
+function addMarker(i){
+  const r = DATA[i];
+  const m = L.circleMarker([r.lat,r.lon], {radius:9, color:"#0d0d0d", weight:2, fillColor:WC_COLOR[r.wc], fillOpacity:.95}).addTo(map);
+  const route = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
+  const wcline = r.toilette ? `<p><b>WC:</b> ${r.toilette}</p>` : '';
+  m.bindPopup(`<div class="karten-popup"><h4>${r.name}</h4><p>${r.district}</p>${wcline}<a href="${route}" target="_blank" rel="noopener">Route in Google Maps →</a></div>`);
+  markers[i] = m;
+}
+DATA.forEach((_,i)=>addMarker(i));
+function fitAlle(){
+  const pts = DATA.map(r=>[r.lat,r.lon]);
+  map.fitBounds(pts, {padding:[36,36], maxZoom:14});
+}
+
+/* ---- Ansicht Liste / Karte ---- */
+const kartenBox = document.getElementById('kartenBox');
+document.getElementById('ansichtChips').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#ansichtChips .chip').forEach(c=>c.setAttribute('aria-pressed', c===b));
+  const karte = b.dataset.ansicht === 'karte';
+  kartenBox.style.display = karte ? 'block' : 'none';
+  if(karte){ setTimeout(()=>{ map.invalidateSize(); fitAlle(); }, 40); }
+});
+
+/* ---- Filter-Chips ---- */
+let fQuelle = '', fWc = '';
+function bindChips(id, cb){
+  document.getElementById(id).addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#'+id+' .chip').forEach(c=>c.setAttribute('aria-pressed', c===b));
+    cb(b); render();
+  });
+}
+bindChips('quelleChips', b=>fQuelle=b.dataset.quelle);
+bindChips('wcChips', b=>fWc=b.dataset.wc);
+const sucheEl = document.getElementById('suche');
+const nurWCEl = document.getElementById('nurWC');
+sucheEl.addEventListener('input', render);
+nurWCEl.addEventListener('change', render);
+
+/* ---- Rendern ---- */
+const listeEl = document.getElementById('liste');
+function render(){
+  const q = sucheEl.value.trim().toLowerCase();
+  const wcWanted = nurWCEl.checked ? 'yes' : fWc;
+  listeEl.innerHTML = '';
+  let shown = 0;
+  DATA.forEach((r,i)=>{
+    const ok = (!q || r.name.toLowerCase().includes(q) || r.district.toLowerCase().includes(q))
+      && (!fQuelle || r.src===fQuelle)
+      && (!wcWanted || r.wc===wcWanted);
+    markers[i].setStyle({opacity: ok?1:0, fillOpacity: ok?.95:0});
+    if(markers[i]._path) markers[i]._path.style.pointerEvents = ok?'':'none';
+    if(!ok) return;
+    shown++;
+    const [pillCls,pillTxt] = WC_PILL[r.wc];
+    const dimmed = (r.wc==='no'||r.wc==='unknown') ? ' abgelehnt' : '';
+    const hi = [r.sitzen && 'Sitzen: '+r.sitzen, r.toilette && 'Toilette: '+r.toilette].filter(Boolean).join(' · ');
+    const route = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
+    const el = document.createElement('article');
+    el.className = 'ticket'+dimmed;
+    el.innerHTML = `
+      <div class="abriss">
+        <div class="punkte">${WC_GLYPH[r.wc]}</div>
+        <div class="von-zehn">WC</div>
+        <div class="status ${pillCls}">${pillTxt}</div>
+      </div>
+      <div class="inhalt">
+        <h2>${r.name}</h2>
+        <p class="meta">${r.district}</p>
+        <p class="text">${r.zugang || ''}</p>
+        ${hi ? `<p class="highlights">${hi}</p>` : ''}
+        <div class="fuss">
+          <span class="quelle">${SRC_LABEL[r.src]}</span>
+          <div class="aktionen">
+            <button class="karte" data-idx="${i}">🗺️ Auf Karte</button>
+            <a class="knopf" href="${route}" target="_blank" rel="noopener">Route</a>
+          </div>
+        </div>
+      </div>`;
+    listeEl.appendChild(el);
+  });
+  if(shown===0) listeEl.innerHTML = '<div class="leer">Keine Treffer – Filter anpassen.</div>';
+}
+
+/* Klick „Auf Karte" -> Kartenansicht + Marker */
+listeEl.addEventListener('click', e=>{
+  const b = e.target.closest('.karte'); if(!b) return;
+  const i = +b.dataset.idx;
+  document.querySelector('#ansichtChips .chip[data-ansicht="karte"]').click();
+  setTimeout(()=>{ map.setView([DATA[i].lat, DATA[i].lon], 15); markers[i].openPopup(); window.scrollTo({top:0, behavior:'smooth'}); }, 80);
+});
+
+/* Stats */
+function updateStats(){
+  const nTested = DATA.filter(r=>r.src==='tested').length;
+  const nWC = DATA.filter(r=>r.wc==='yes').length;
+  document.getElementById('stats').innerHTML =
+    `${DATA.length} Restaurants &nbsp;·&nbsp; ${nTested} selbst getestet &nbsp;·&nbsp; ${nWC}× barrierefreies WC &nbsp;·&nbsp; Stand 07/2026`;
+}
+updateStats();
+
+/* ---- Live-Nachladen aus OpenStreetMap / Wheelmap ---- */
+const osmBtn = document.getElementById('osmBtn');
+const osmStatus = document.getElementById('osmStatus');
+let osmGeladen = false;
+
+// Grenzen Hamburg (Süd, West, Nord, Ost)
+const HH_BBOX = [53.39, 9.73, 53.74, 10.33];
+const OVERPASS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+];
+const Q = `[out:json][timeout:30];`
+  + `nwr["amenity"="restaurant"]["wheelchair"~"yes|limited"]["name"]`
+  + `(${HH_BBOX.join(',')});out center 600;`;
+
+function mapWc(t){ return (t==='yes'||t==='limited'||t==='no') ? t : 'unknown'; }
+function nah(a,b){ return Math.abs(a.lat-b.lat)<0.0006 && Math.abs(a.lon-b.lon)<0.0009; }
+
+async function ladeOverpass(){
+  let lastErr;
+  for(const url of OVERPASS){
+    try{
+      const res = await fetch(url, {method:'POST', body:'data='+encodeURIComponent(Q)});
+      if(!res.ok){ lastErr = 'HTTP '+res.status; continue; }
+      return await res.json();
+    }catch(e){ lastErr = e.message; }
+  }
+  throw new Error(lastErr || 'nicht erreichbar');
+}
+
+osmBtn.addEventListener('click', async ()=>{
+  if(osmGeladen) return;
+  osmBtn.disabled = true;
+  osmStatus.textContent = 'Suche bei OpenStreetMap …';
+  try{
+    const data = await ladeOverpass();
+    let neu = 0;
+    (data.elements||[]).forEach(el=>{
+      const tags = el.tags||{};
+      const lat = el.lat ?? el.center?.lat;
+      const lon = el.lon ?? el.center?.lon;
+      if(!tags.name || lat==null || lon==null) return;
+      const kandidat = {name:tags.name, lat, lon};
+      // Dubletten gegen bestehende Liste vermeiden (Name oder Nähe)
+      const exists = DATA.some(r =>
+        r.name.toLowerCase() === tags.name.toLowerCase() || nah(r, kandidat));
+      if(exists) return;
+      const toil = tags['toilets:wheelchair'];
+      const eintrag = {
+        name: tags.name,
+        district: tags['addr:suburb'] || tags['addr:city'] || 'Hamburg',
+        lat, lon, src:'osm',
+        wc: mapWc(toil),
+        zugang: 'Zugang laut OpenStreetMap: ' + (tags.wheelchair==='limited' ? 'eingeschränkt' : 'barrierefrei'),
+        sitzen: '',
+        toilette: toil ? ('Rollstuhl-WC laut OSM: ' + toil) : ''
+      };
+      DATA.push(eintrag);
+      addMarker(DATA.length-1);
+      neu++;
+    });
+    osmGeladen = true;
+    updateStats();
+    render();
+    osmStatus.textContent = neu>0
+      ? `${neu} weitere aus OpenStreetMap ergänzt (Community-Angaben – bitte vorab prüfen).`
+      : 'Keine zusätzlichen Einträge gefunden.';
+    osmBtn.style.display = 'none';
+  }catch(e){
+    osmStatus.textContent = 'OpenStreetMap gerade nicht erreichbar – später erneut versuchen.';
+    osmBtn.disabled = false;
+  }
+});
+
+render();
+</script>
+</body>
+</html>
