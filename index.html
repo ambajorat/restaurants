@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Barrierefreie Restaurants in Hamburg – Plötzlich Querschnitt</title>
+<title>Barrierefreie Restaurants finden – Plötzlich Querschnitt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cardo:wght@400;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -22,7 +22,6 @@ body{
 }
 .hülle{max-width:760px; margin:0 auto; padding:36px 20px 90px}
 
-/* Kopf im Blog-Stil */
 .blogzeile{font-size:14px; letter-spacing:.04em; text-transform:uppercase; margin:0 0 6px}
 .zurueck{
   display:inline-block; color:var(--akzent); text-decoration:none;
@@ -36,33 +35,55 @@ header h1{
   letter-spacing:-0.01em; margin:0 0 6px; line-height:1.15;
 }
 .untertitel{margin:0 0 8px; color:var(--gedimmt); font-size:17px}
-.stats{font-size:13.5px; color:var(--gedimmt); margin:0 0 30px}
+.stats{font-size:13.5px; color:var(--gedimmt); margin:0 0 24px}
+
+/* Stadt-Eingabe */
+.stadt-zeile{
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  padding:12px 14px; margin-bottom:20px;
+  background:var(--leicht); border:1px solid var(--linie); border-radius:10px;
+  font-size:14px;
+}
+.stadt-zeile label{font-weight:600}
+.stadt-zeile input{
+  flex:1; min-width:180px; font:inherit; font-size:15px;
+  padding:8px 11px; border-radius:6px;
+  border:1px solid var(--linie); background:var(--papier); color:var(--tinte);
+}
+.stadt-zeile button{
+  font:inherit; font-size:15px; font-weight:600; cursor:pointer;
+  color:#0d0d0d; background:var(--akzent); border:none;
+  padding:9px 18px; border-radius:6px;
+}
+.stadt-zeile button:hover{background:var(--akzent-dunkel)}
+.stadt-zeile button[disabled]{opacity:.6; cursor:progress}
+.schnellstadt{display:flex; gap:6px; flex-wrap:wrap; width:100%}
+.schnellstadt button{
+  font:inherit; font-size:13px; padding:5px 11px; border-radius:999px;
+  border:1px solid var(--linie); background:transparent; color:var(--tinte); cursor:pointer;
+}
+.schnellstadt button:hover{border-color:var(--akzent); color:var(--akzent)}
+#stadtStatus{color:var(--akzent); font-size:13px; width:100%; margin-top:2px}
 
 .ansicht-zeile{margin:0 0 12px}
-#karte{
-  height:520px; border:1px solid var(--linie); border-radius:10px;
-  overflow:hidden; margin-bottom:8px;
-}
+#karte{height:520px; border:1px solid var(--linie); border-radius:10px; overflow:hidden; margin-bottom:8px}
 .karten-hinweis{font-size:13px; color:var(--gedimmt); margin:0 0 24px; text-align:center}
 .karten-popup h4{margin:0 0 4px; font-family:Cardo,Georgia,serif; font-size:16px; color:#0d0d0d}
 .karten-popup p{margin:0 0 6px; font-size:13px; color:#333}
 .karten-popup a{color:var(--akzent-dunkel); font-weight:600; text-decoration:none; font-size:13px}
-.karten-popup .p-score{display:inline-block; background:var(--akzent); color:#0d0d0d;
-  font-weight:700; padding:2px 8px; border-radius:999px; font-size:12px; margin-right:6px}
 
-/* Filterleiste */
 .filter{
   display:flex; flex-wrap:wrap; gap:10px; align-items:center;
   padding:14px 0; border-top:1px solid var(--linie);
-  border-bottom:1px solid var(--linie); margin-bottom:30px;
+  border-bottom:1px solid var(--linie); margin-bottom:20px;
 }
 .chips{display:flex; gap:6px; flex-wrap:wrap}
 .chip{
   font-size:14px; padding:6px 12px; border-radius:999px;
-  border:1px solid var(--linie); background:transparent;
-  color:var(--tinte); cursor:pointer;
+  border:1px solid var(--linie); background:transparent; color:var(--tinte); cursor:pointer;
 }
 .chip[aria-pressed="true"]{background:var(--akzent); color:#0d0d0d; border-color:var(--akzent)}
+.chip[hidden]{display:none}
 .filter select,.filter input[type=search]{
   font:inherit; font-size:14px; padding:7px 10px; border-radius:6px;
   border:1px solid var(--linie); background:var(--leicht); color:var(--tinte);
@@ -71,11 +92,12 @@ header h1{
 .schalter{display:flex; align-items:center; gap:7px; font-size:14px; cursor:pointer; white-space:nowrap}
 .schalter input{accent-color:var(--akzent); width:16px; height:16px}
 .chip:focus-visible,.filter select:focus-visible,.filter input:focus-visible,
-.schalter input:focus-visible,.knopf:focus-visible,.karte:focus-visible{
-  outline:2px solid var(--akzent); outline-offset:2px;
-}
+.schalter input:focus-visible,.knopf:focus-visible,.karte:focus-visible{outline:2px solid var(--akzent); outline-offset:2px}
 
-/* Einträge im Artikel-Stil des Blogs */
+.websuche{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:0 0 26px}
+.websuche .knopf{border:none; cursor:pointer}
+.websuche .knopf[disabled]{opacity:.6; cursor:progress}
+
 .liste{display:flex; flex-direction:column}
 .ticket{display:flex; gap:20px; padding:26px 0; border-bottom:1px solid var(--linie)}
 .abriss{flex:0 0 64px; display:flex; flex-direction:column; align-items:center; gap:2px; padding-top:6px}
@@ -98,9 +120,6 @@ header h1{
 .karte:hover{text-decoration:underline}
 .knopf{font-size:15px; font-weight:600; text-decoration:none; color:#0d0d0d; background:var(--akzent); padding:8px 16px; border-radius:6px}
 .knopf:hover{background:var(--akzent-dunkel)}
-.websuche{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:-14px 0 26px}
-.websuche .knopf{border:none; cursor:pointer}
-.websuche .knopf[disabled]{opacity:.6; cursor:progress}
 .leer{text-align:center; padding:60px 20px; color:var(--gedimmt); background:var(--leicht); border:1px dashed var(--linie); border-radius:10px}
 footer.seite{margin-top:40px; padding-top:16px; border-top:1px solid var(--linie); font-size:13.5px; color:var(--gedimmt)}
 footer.seite a{color:var(--akzent)}
@@ -116,10 +135,18 @@ footer.seite a{color:var(--akzent)}
 <div class="hülle">
 <header>
   <p class="blogzeile"><a class="zurueck" href="https://ploetzlich-querschnitt.de">&larr; Zur&uuml;ck zu Pl&ouml;tzlich Querschnitt</a></p>
-  <h1>Barrierefreie Restaurants in Hamburg</h1>
-  <p class="untertitel">Restaurants, die ich selbst im Rollstuhl getestet oder recherchiert habe – geprüft auf Zugang, entspanntes Sitzen und eine erreichbare Toilette.</p>
+  <h1>Barrierefreie Restaurants</h1>
+  <p class="untertitel" id="untertitel"></p>
   <p class="stats" id="stats"></p>
 </header>
+
+<div class="stadt-zeile">
+  <label for="stadt">Deine Stadt:</label>
+  <input type="text" id="stadt" placeholder="z. B. Köln, Berlin, München …" autocomplete="off">
+  <button id="stadtBtn">Anzeigen</button>
+  <div class="schnellstadt" id="schnellstadt"></div>
+  <span id="stadtStatus"></span>
+</div>
 
 <div class="ansicht-zeile">
   <div class="chips" id="ansichtChips">
@@ -130,7 +157,7 @@ footer.seite a{color:var(--akzent)}
 
 <div id="kartenBox" style="display:none">
   <div id="karte"></div>
-  <p class="karten-hinweis">Farbe = Toilette: <span style="color:var(--akzent)">●</span> barrierefrei &nbsp;·&nbsp; <span style="color:var(--gedimmt)">●</span> eingeschränkt / nicht erreichbar / unbekannt</p>
+  <p class="karten-hinweis">Farbe = Toilette: <span style="color:var(--akzent)">●</span> barrierefrei / eingeschränkt &nbsp;·&nbsp; <span style="color:var(--gedimmt)">●</span> nicht erreichbar / unbekannt</p>
 </div>
 
 <div class="filter" role="group" aria-label="Filter">
@@ -158,7 +185,7 @@ footer.seite a{color:var(--akzent)}
 <div class="liste" id="liste"></div>
 
 <footer class="seite">
-  „Selbst getestet" sind eigene Erfahrungen, „recherchiert" stammt aus öffentlichen Quellen (u. a. hamburg.de, Genuss-Guide) und ist noch nicht persönlich geprüft.
+  In Hamburg sind „selbst getestet" eigene Erfahrungen von André und „recherchiert" öffentliche Quellen. In allen anderen Städten stammen die Angaben aus OpenStreetMap / Wheelmap (Community-Daten, nicht persönlich geprüft).
   Alle Angaben ohne Gewähr – Zugang und Toilette vor dem Besuch im Zweifel telefonisch gegenprüfen.
   Teil von <a href="https://ploetzlich-querschnitt.de">ploetzlich-querschnitt.de</a> · by André M. Bajorat ·
   Kartendaten © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>, Ortssuche <a href="https://nominatim.openstreetmap.org">Nominatim</a>
@@ -166,7 +193,8 @@ footer.seite a{color:var(--akzent)}
 </div>
 
 <script>
-const DATA = [
+/* Hamburg – Andrés Kern-Liste (selbst getestet + recherchiert) */
+const HAMBURG = [
   {name:"Bullerei", district:"Sternschanze", lat:53.5631311, lon:9.9661488, src:"tested", wc:"yes",
    zugang:"Einfach, nur der Hof ist Kopfsteinpflaster", sitzen:"Sehr gut möglich", toilette:"Komplett barrierefrei"},
   {name:"Mutterland (Stammhaus)", district:"Altstadt / Hbf", lat:53.5541117, lon:10.0042820, src:"tested", wc:"no",
@@ -213,23 +241,79 @@ const WC_GLYPH = {yes:"✓", limited:"~", no:"✗", unknown:"?"};
 const WC_PILL  = {yes:["ja","WC frei"], limited:["nein","WC eng"], no:["nein","kein WC"], unknown:["nein","WC ?"]};
 const WC_COLOR = {yes:"#ff8a2a", limited:"#ff8a2a", no:"#9a9a94", unknown:"#9a9a94"};
 const SRC_LABEL = {tested:"Selbst getestet", web:"Recherchiert", osm:"OpenStreetMap / Wheelmap"};
+const SCHNELL = ["Berlin","Köln","München","Frankfurt","Wien","Amsterdam"];
+
+const OVERPASS = [
+  'https://overpass-api.de/api/interpreter',
+  'https://overpass.kumi.systems/api/interpreter',
+  'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
+];
+
+let DATA = [];          // aktuell angezeigte Restaurants
+let stadtName = 'Hamburg';
+let istHamburg = true;
 
 /* ---- Karte ---- */
 const map = L.map('karte', {scrollWheelZoom:true});
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom:19, attribution:'© OpenStreetMap-Mitwirkende'}).addTo(map);
-const markers = {};
+const markerLayer = L.layerGroup().addTo(map);
+let markers = {};
+
 function addMarker(i){
   const r = DATA[i];
-  const m = L.circleMarker([r.lat,r.lon], {radius:9, color:"#0d0d0d", weight:2, fillColor:WC_COLOR[r.wc], fillOpacity:.95}).addTo(map);
+  const m = L.circleMarker([r.lat,r.lon], {radius:9, color:"#0d0d0d", weight:2, fillColor:WC_COLOR[r.wc], fillOpacity:.95});
   const route = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
   const wcline = r.toilette ? `<p><b>WC:</b> ${r.toilette}</p>` : '';
   m.bindPopup(`<div class="karten-popup"><h4>${r.name}</h4><p>${r.district}</p>${wcline}<a href="${route}" target="_blank" rel="noopener">Route in Google Maps →</a></div>`);
+  markerLayer.addLayer(m);
   markers[i] = m;
 }
-DATA.forEach((_,i)=>addMarker(i));
+function baueMarker(){
+  markerLayer.clearLayers(); markers = {};
+  DATA.forEach((_,i)=>addMarker(i));
+}
 function fitAlle(){
-  const pts = DATA.map(r=>[r.lat,r.lon]);
-  map.fitBounds(pts, {padding:[36,36], maxZoom:14});
+  if(!DATA.length) return;
+  map.fitBounds(DATA.map(r=>[r.lat,r.lon]), {padding:[36,36], maxZoom:14});
+}
+
+/* ---- Daten setzen ---- */
+function setStadt(name, liste, hamburg){
+  stadtName = name; istHamburg = !!hamburg;
+  DATA = liste;
+  baueMarker();
+  // Quelle-Chips getestet/recherchiert nur für Hamburg sinnvoll
+  document.querySelector('#quelleChips [data-quelle="tested"]').hidden = !istHamburg;
+  document.querySelector('#quelleChips [data-quelle="web"]').hidden = !istHamburg;
+  document.querySelector('#quelleChips [data-quelle="osm"]').hidden = istHamburg ? false : true;
+  // Filter zurücksetzen
+  fQuelle=''; fWc=''; document.getElementById('nurWC').checked=false; document.getElementById('suche').value='';
+  document.querySelectorAll('#quelleChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.quelle===''));
+  document.querySelectorAll('#wcChips .chip').forEach(c=>c.setAttribute('aria-pressed', c.dataset.wc===''));
+  // OSM-Nachladen nur in Hamburg (sonst sind Daten bereits OSM)
+  const osmWrap = document.querySelector('.websuche');
+  osmWrap.style.display = istHamburg ? 'flex' : 'none';
+  osmGeladen = false;
+  document.getElementById('osmBtn').style.display = 'inline-block';
+  document.getElementById('osmBtn').disabled = false;
+  document.getElementById('osmStatus').textContent = '';
+  kopf();
+  render();
+  if(document.getElementById('kartenBox').style.display !== 'none'){ setTimeout(()=>{map.invalidateSize(); fitAlle();},40); }
+  else fitAlle();
+}
+function kopf(){
+  const ut = document.getElementById('untertitel');
+  const st = document.getElementById('stats');
+  if(istHamburg){
+    ut.textContent = 'In Hamburg von André selbst im Rollstuhl getestet oder recherchiert – geprüft auf Zugang, Sitzen und eine erreichbare Toilette.';
+    const nT = DATA.filter(r=>r.src==='tested').length, nW = DATA.filter(r=>r.wc==='yes').length;
+    st.innerHTML = `${DATA.length} Restaurants in Hamburg &nbsp;·&nbsp; ${nT} selbst getestet &nbsp;·&nbsp; ${nW}× barrierefreies WC`;
+  } else {
+    ut.textContent = `Als rollstuhlgerecht markierte Restaurants in ${stadtName} – Community-Daten aus OpenStreetMap / Wheelmap, nicht persönlich geprüft.`;
+    const nW = DATA.filter(r=>r.wc==='yes').length;
+    st.innerHTML = `${DATA.length} Restaurants in ${stadtName} &nbsp;·&nbsp; ${nW}× mit barrierefreiem WC &nbsp;·&nbsp; Quelle: OpenStreetMap / Wheelmap`;
+  }
 }
 
 /* ---- Ansicht Liste / Karte ---- */
@@ -242,11 +326,11 @@ document.getElementById('ansichtChips').addEventListener('click', e=>{
   if(karte){ setTimeout(()=>{ map.invalidateSize(); fitAlle(); }, 40); }
 });
 
-/* ---- Filter-Chips ---- */
+/* ---- Filter ---- */
 let fQuelle = '', fWc = '';
 function bindChips(id, cb){
   document.getElementById(id).addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
+    const b = e.target.closest('button'); if(!b || b.hidden) return;
     document.querySelectorAll('#'+id+' .chip').forEach(c=>c.setAttribute('aria-pressed', c===b));
     cb(b); render();
   });
@@ -266,11 +350,11 @@ function render(){
   listeEl.innerHTML = '';
   let shown = 0;
   DATA.forEach((r,i)=>{
-    const ok = (!q || r.name.toLowerCase().includes(q) || r.district.toLowerCase().includes(q))
+    const ok = (!q || r.name.toLowerCase().includes(q) || (r.district||'').toLowerCase().includes(q))
       && (!fQuelle || r.src===fQuelle)
       && (!wcWanted || r.wc===wcWanted);
-    markers[i].setStyle({opacity: ok?1:0, fillOpacity: ok?.95:0});
-    if(markers[i]._path) markers[i]._path.style.pointerEvents = ok?'':'none';
+    if(markers[i]) markers[i].setStyle({opacity: ok?1:0, fillOpacity: ok?.95:0});
+    if(markers[i] && markers[i]._path) markers[i]._path.style.pointerEvents = ok?'':'none';
     if(!ok) return;
     shown++;
     const [pillCls,pillTxt] = WC_PILL[r.wc];
@@ -287,11 +371,11 @@ function render(){
       </div>
       <div class="inhalt">
         <h2>${r.name}</h2>
-        <p class="meta">${r.district}</p>
+        <p class="meta">${r.district||''}</p>
         <p class="text">${r.zugang || ''}</p>
         ${hi ? `<p class="highlights">${hi}</p>` : ''}
         <div class="fuss">
-          <span class="quelle">${SRC_LABEL[r.src]}</span>
+          <span class="quelle">${SRC_LABEL[r.src]||''}</span>
           <div class="aktionen">
             <button class="karte" data-idx="${i}">🗺️ Auf Karte</button>
             <a class="knopf" href="${route}" target="_blank" rel="noopener">Route</a>
@@ -302,8 +386,6 @@ function render(){
   });
   if(shown===0) listeEl.innerHTML = '<div class="leer">Keine Treffer – Filter anpassen.</div>';
 }
-
-/* Klick „Auf Karte" -> Kartenansicht + Marker */
 listeEl.addEventListener('click', e=>{
   const b = e.target.closest('.karte'); if(!b) return;
   const i = +b.dataset.idx;
@@ -311,91 +393,103 @@ listeEl.addEventListener('click', e=>{
   setTimeout(()=>{ map.setView([DATA[i].lat, DATA[i].lon], 15); markers[i].openPopup(); window.scrollTo({top:0, behavior:'smooth'}); }, 80);
 });
 
-/* Stats */
-function updateStats(){
-  const nTested = DATA.filter(r=>r.src==='tested').length;
-  const nWC = DATA.filter(r=>r.wc==='yes').length;
-  document.getElementById('stats').innerHTML =
-    `${DATA.length} Restaurants &nbsp;·&nbsp; ${nTested} selbst getestet &nbsp;·&nbsp; ${nWC}× barrierefreies WC &nbsp;·&nbsp; Stand 07/2026`;
-}
-updateStats();
-
-/* ---- Live-Nachladen aus OpenStreetMap / Wheelmap ---- */
-const osmBtn = document.getElementById('osmBtn');
-const osmStatus = document.getElementById('osmStatus');
-let osmGeladen = false;
-
-// Grenzen Hamburg (Süd, West, Nord, Ost)
-const HH_BBOX = [53.39, 9.73, 53.74, 10.33];
-const OVERPASS = [
-  'https://overpass-api.de/api/interpreter',
-  'https://overpass.kumi.systems/api/interpreter',
-  'https://maps.mail.ru/osm/tools/overpass/api/interpreter'
-];
-const Q = `[out:json][timeout:30];`
-  + `nwr["amenity"="restaurant"]["wheelchair"~"yes|limited"]["name"]`
-  + `(${HH_BBOX.join(',')});out center 600;`;
-
+/* ---- OSM helpers ---- */
 function mapWc(t){ return (t==='yes'||t==='limited'||t==='no') ? t : 'unknown'; }
 function nah(a,b){ return Math.abs(a.lat-b.lat)<0.0006 && Math.abs(a.lon-b.lon)<0.0009; }
-
-async function ladeOverpass(){
+async function overpass(query){
   let lastErr;
   for(const url of OVERPASS){
     try{
-      const res = await fetch(url, {method:'POST', body:'data='+encodeURIComponent(Q)});
-      if(!res.ok){ lastErr = 'HTTP '+res.status; continue; }
+      const res = await fetch(url, {method:'POST', body:'data='+encodeURIComponent(query)});
+      if(!res.ok){ lastErr='HTTP '+res.status; continue; }
       return await res.json();
-    }catch(e){ lastErr = e.message; }
+    }catch(e){ lastErr=e.message; }
   }
-  throw new Error(lastErr || 'nicht erreichbar');
+  throw new Error(lastErr||'nicht erreichbar');
+}
+function elementeZuEintraegen(elements, vorhanden){
+  const out = [];
+  (elements||[]).forEach(el=>{
+    const tags = el.tags||{};
+    const lat = el.lat ?? el.center?.lat, lon = el.lon ?? el.center?.lon;
+    if(!tags.name || lat==null || lon==null) return;
+    const kand = {name:tags.name, lat, lon};
+    if(vorhanden.some(r=> r.name.toLowerCase()===tags.name.toLowerCase() || nah(r,kand))) return;
+    if(out.some(r=> nah(r,kand))) return;
+    const toil = tags['toilets:wheelchair'];
+    out.push({
+      name: tags.name,
+      district: tags['addr:suburb'] || tags['addr:city'] || stadtName,
+      lat, lon, src:'osm', wc: mapWc(toil),
+      zugang: 'Zugang laut OpenStreetMap: ' + (tags.wheelchair==='limited' ? 'eingeschränkt' : 'barrierefrei'),
+      sitzen:'', toilette: toil ? ('Rollstuhl-WC laut OSM: '+toil) : ''
+    });
+  });
+  return out;
 }
 
-osmBtn.addEventListener('click', async ()=>{
-  if(osmGeladen) return;
-  osmBtn.disabled = true;
-  osmStatus.textContent = 'Suche bei OpenStreetMap …';
+/* ---- Stadt laden ---- */
+const stadtInput = document.getElementById('stadt');
+const stadtBtn = document.getElementById('stadtBtn');
+const stadtStatus = document.getElementById('stadtStatus');
+
+async function ladeStadt(name){
+  name = (name||'').trim();
+  if(!name) return;
+  if(/hamburg/i.test(name)){ setStadt('Hamburg', HAMBURG.slice(), true); stadtStatus.textContent=''; return; }
+  stadtBtn.disabled = true; stadtStatus.textContent = `Suche „${name}" …`;
   try{
-    const data = await ladeOverpass();
-    let neu = 0;
-    (data.elements||[]).forEach(el=>{
-      const tags = el.tags||{};
-      const lat = el.lat ?? el.center?.lat;
-      const lon = el.lon ?? el.center?.lon;
-      if(!tags.name || lat==null || lon==null) return;
-      const kandidat = {name:tags.name, lat, lon};
-      // Dubletten gegen bestehende Liste vermeiden (Name oder Nähe)
-      const exists = DATA.some(r =>
-        r.name.toLowerCase() === tags.name.toLowerCase() || nah(r, kandidat));
-      if(exists) return;
-      const toil = tags['toilets:wheelchair'];
-      const eintrag = {
-        name: tags.name,
-        district: tags['addr:suburb'] || tags['addr:city'] || 'Hamburg',
-        lat, lon, src:'osm',
-        wc: mapWc(toil),
-        zugang: 'Zugang laut OpenStreetMap: ' + (tags.wheelchair==='limited' ? 'eingeschränkt' : 'barrierefrei'),
-        sitzen: '',
-        toilette: toil ? ('Rollstuhl-WC laut OSM: ' + toil) : ''
-      };
-      DATA.push(eintrag);
-      addMarker(DATA.length-1);
-      neu++;
-    });
-    osmGeladen = true;
-    updateStats();
-    render();
-    osmStatus.textContent = neu>0
-      ? `${neu} weitere aus OpenStreetMap ergänzt (Community-Angaben – bitte vorab prüfen).`
-      : 'Keine zusätzlichen Einträge gefunden.';
-    osmBtn.style.display = 'none';
+    const g = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(name)}`);
+    const gj = await g.json();
+    if(!gj.length) throw new Error('Ort nicht gefunden');
+    const ort = gj[0];
+    const schoen = ort.display_name.split(',')[0];
+    const bb = ort.boundingbox; // [south, north, west, east]
+    const bbox = [bb[0], bb[2], bb[1], bb[3]].join(','); // south,west,north,east
+    stadtStatus.textContent = `Lade rollstuhlgerechte Restaurants in ${schoen} …`;
+    const q = `[out:json][timeout:30];nwr["amenity"="restaurant"]["wheelchair"~"yes|limited"]["name"](${bbox});out center 600;`;
+    const data = await overpass(q);
+    const liste = elementeZuEintraegen(data.elements, []);
+    if(!liste.length){ stadtStatus.textContent = `Für ${schoen} sind bei OpenStreetMap noch keine rollstuhlgerechten Restaurants markiert.`; stadtBtn.disabled=false; return; }
+    setStadt(schoen, liste, false);
+    stadtStatus.textContent = `${liste.length} Einträge aus OpenStreetMap / Wheelmap.`;
   }catch(e){
-    osmStatus.textContent = 'OpenStreetMap gerade nicht erreichbar – später erneut versuchen.';
-    osmBtn.disabled = false;
+    stadtStatus.textContent = 'Suche gerade nicht möglich – bitte später erneut versuchen.';
   }
+  stadtBtn.disabled = false;
+}
+stadtBtn.addEventListener('click', ()=>ladeStadt(stadtInput.value));
+stadtInput.addEventListener('keydown', e=>{ if(e.key==='Enter') ladeStadt(stadtInput.value); });
+
+// Schnellwahl-Städte
+const schnellEl = document.getElementById('schnellstadt');
+['Hamburg', ...SCHNELL].forEach(c=>{
+  const b = document.createElement('button');
+  b.textContent = c;
+  b.addEventListener('click', ()=>{ stadtInput.value = c==='Hamburg'?'':c; ladeStadt(c); });
+  schnellEl.appendChild(b);
 });
 
-render();
+/* ---- OSM in Hamburg nachladen ---- */
+let osmGeladen = false;
+const osmBtn = document.getElementById('osmBtn');
+const osmStatus = document.getElementById('osmStatus');
+osmBtn.addEventListener('click', async ()=>{
+  if(osmGeladen || !istHamburg) return;
+  osmBtn.disabled = true; osmStatus.textContent = 'Suche bei OpenStreetMap …';
+  try{
+    const q = `[out:json][timeout:30];nwr["amenity"="restaurant"]["wheelchair"~"yes|limited"]["name"](53.39,9.73,53.74,10.33);out center 600;`;
+    const data = await overpass(q);
+    const neu = elementeZuEintraegen(data.elements, DATA);
+    neu.forEach(r=>{ DATA.push(r); addMarker(DATA.length-1); });
+    osmGeladen = true; kopf(); render();
+    osmStatus.textContent = neu.length ? `${neu.length} weitere aus OpenStreetMap ergänzt (Community-Angaben – bitte vorab prüfen).` : 'Keine zusätzlichen Einträge gefunden.';
+    osmBtn.style.display = 'none';
+  }catch(e){ osmStatus.textContent = 'OpenStreetMap gerade nicht erreichbar – später erneut versuchen.'; osmBtn.disabled = false; }
+});
+
+/* Start: Hamburg */
+setStadt('Hamburg', HAMBURG.slice(), true);
 </script>
 </body>
 </html>
