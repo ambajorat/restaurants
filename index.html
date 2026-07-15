@@ -598,8 +598,8 @@ osmBtn.addEventListener('click', async ()=>{
       kopieren und hier unten eintragen. Der anon-Key ist öffentlich und darf
       im Code stehen. Fertig – ab dann erscheinen Sterne & Kommentarfelder.
    ===================================================================== */
-const SUPABASE_URL = "";   // z.B. https://deinprojekt.supabase.co
-const SUPABASE_KEY = "";   // anon public Key
+const SUPABASE_URL = "https://kkbkwsqbvjlhigperygi.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtrYmt3c3FidmpsaGlncGVyeWdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMjk0NDgsImV4cCI6MjA5OTcwNTQ0OH0.WDRom8mUmjvUyOZLRUOlnwz2rsk57aq4Baojtwf_Q2U";
 
 const bewertungAktiv = () => !!(SUPABASE_URL && SUPABASE_KEY);
 let cityBew = {};          // restaurant_key -> [ {sterne,name,kommentar,created_at} ]
