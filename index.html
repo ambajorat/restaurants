@@ -113,6 +113,8 @@ header h1{
 .meta{font-size:14px; color:var(--akzent); margin:0 0 10px}
 .inhalt p.text{margin:0 0 10px; font-size:16px}
 .highlights{color:var(--gedimmt); font-style:italic; font-size:15px; margin:0 0 6px}
+.kriterien{font-size:13px; color:var(--gedimmt); letter-spacing:.01em; margin:0 0 4px}
+.von-zehn{white-space:nowrap}
 .fuss{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-top:12px}
 .quelle{font-size:13px; color:var(--gedimmt)}
 .aktionen{display:flex; align-items:center; gap:14px}
@@ -185,6 +187,7 @@ footer.seite a{color:var(--akzent)}
 <div class="liste" id="liste"></div>
 
 <footer class="seite">
+  Bewertung 1–10: barrierefreies WC (max 4) + stufenloser Zugang (max 3) + Platz zum Sitzen (max 2) + selbst getestet (max 1). „–" = zu wenig Infos.
   In Hamburg sind „selbst getestet" eigene Erfahrungen von André und „recherchiert" öffentliche Quellen. In allen anderen Städten stammen die Angaben aus OpenStreetMap / Wheelmap (Community-Daten, nicht persönlich geprüft).
   Alle Angaben ohne Gewähr – Zugang und Toilette vor dem Besuch im Zweifel telefonisch gegenprüfen.
   Teil von <a href="https://ploetzlich-querschnitt.de">ploetzlich-querschnitt.de</a> · by André M. Bajorat ·
@@ -242,6 +245,36 @@ const WC_PILL  = {yes:["ja","WC frei"], limited:["nein","WC eng"], no:["nein","k
 const WC_COLOR = {yes:"#ff8a2a", limited:"#ff8a2a", no:"#9a9a94", unknown:"#9a9a94"};
 const SRC_LABEL = {tested:"Selbst getestet", web:"Recherchiert", osm:"OpenStreetMap / Wheelmap"};
 const SCHNELL = ["Berlin","Köln","München","Frankfurt","Wien","Amsterdam"];
+
+/* ---- Bewertung 1–10 ----
+   WC barrierefrei max 4 · stufenloser Zugang max 3 · Platz zum Sitzen max 2 · selbst getestet max 1 */
+function zugangGrade(r){
+  if(r.zg) return r.zg;                       // expliziter Wert (z.B. OSM)
+  const t = (r.zugang||'').toLowerCase();
+  if(!t || t.includes('detailnotiz')) return 'unknown';
+  if(t.includes('beschwerlich') || t.includes('durch die küche')) return 'part';
+  if(t.includes('einfach') || t.includes('gut') || t.includes('barrierefrei')
+     || t.includes('rampe') || t.includes('fahrstuhl') || t.includes('aufzug')) return 'full';
+  return 'part';
+}
+function scoreOf(r){
+  const g = zugangGrade(r);
+  if(g==='unknown' && r.wc==='unknown') return null;   // zu wenig Infos → kein Rating
+  const wcPts = r.wc==='yes'?4 : r.wc==='limited'?2 : 0;
+  const zgPts = g==='full'?3 : g==='part'?1.5 : 0;
+  const plPts = r.sitzen ? 2 : 0;
+  const stPts = r.src==='tested'?1 : r.src==='web'?0.5 : 0;
+  return Math.round((wcPts+zgPts+plPts+stPts)*10)/10;
+}
+function kriterienZeile(r){
+  const g = zugangGrade(r);
+  return [
+    'Zugang '  + (g==='full'?'✓':g==='part'?'~':'✗'),
+    'WC '      + (r.wc==='yes'?'✓':r.wc==='limited'?'~':'✗'),
+    'Platz '   + (r.sitzen?'✓':'✗'),
+    (r.src==='tested'?'getestet ✓':r.src==='web'?'recherchiert':'OSM')
+  ].join(' · ');
+}
 
 const OVERPASS = [
   'https://overpass-api.de/api/interpreter',
@@ -348,8 +381,14 @@ function render(){
   const q = sucheEl.value.trim().toLowerCase();
   const wcWanted = nurWCEl.checked ? 'yes' : fWc;
   listeEl.innerHTML = '';
+  // Ranking: nach Punkten absteigend, Einträge ohne Bewertung ans Ende
+  const order = DATA.map((_,i)=>i).sort((a,b)=>{
+    const sa=scoreOf(DATA[a]), sb=scoreOf(DATA[b]);
+    return (sb===null?-1:sb)-(sa===null?-1:sa);
+  });
   let shown = 0;
-  DATA.forEach((r,i)=>{
+  order.forEach(i=>{
+    const r = DATA[i];
     const ok = (!q || r.name.toLowerCase().includes(q) || (r.district||'').toLowerCase().includes(q))
       && (!fQuelle || r.src===fQuelle)
       && (!wcWanted || r.wc===wcWanted);
@@ -357,16 +396,17 @@ function render(){
     if(markers[i] && markers[i]._path) markers[i]._path.style.pointerEvents = ok?'':'none';
     if(!ok) return;
     shown++;
+    const s = scoreOf(r);
     const [pillCls,pillTxt] = WC_PILL[r.wc];
-    const dimmed = (r.wc==='no'||r.wc==='unknown') ? ' abgelehnt' : '';
+    const dimmed = (s===null || s<4) ? ' abgelehnt' : '';
     const hi = [r.sitzen && 'Sitzen: '+r.sitzen, r.toilette && 'Toilette: '+r.toilette].filter(Boolean).join(' · ');
     const route = `https://www.google.com/maps/dir/?api=1&destination=${r.lat},${r.lon}`;
     const el = document.createElement('article');
     el.className = 'ticket'+dimmed;
     el.innerHTML = `
       <div class="abriss">
-        <div class="punkte">${WC_GLYPH[r.wc]}</div>
-        <div class="von-zehn">WC</div>
+        <div class="punkte">${s===null?'–':s}</div>
+        <div class="von-zehn">${s===null?'k. A.':'/ 10'}</div>
         <div class="status ${pillCls}">${pillTxt}</div>
       </div>
       <div class="inhalt">
@@ -374,6 +414,7 @@ function render(){
         <p class="meta">${r.district||''}</p>
         <p class="text">${r.zugang || ''}</p>
         ${hi ? `<p class="highlights">${hi}</p>` : ''}
+        <p class="kriterien">${kriterienZeile(r)}</p>
         <div class="fuss">
           <span class="quelle">${SRC_LABEL[r.src]||''}</span>
           <div class="aktionen">
@@ -424,6 +465,7 @@ function elementeZuEintraegen(elements, vorhanden){
       name: tags.name,
       district: tags['addr:suburb'] || tags['addr:city'] || stadtName,
       lat, lon, src:'osm', wc: mapWc(toil),
+      zg: tags.wheelchair==='limited' ? 'part' : 'full',
       zugang: 'Zugang laut OpenStreetMap: ' + (tags.wheelchair==='limited' ? 'eingeschränkt' : 'barrierefrei'),
       sitzen:'', toilette: toil ? ('Rollstuhl-WC laut OSM: '+toil) : ''
     });
