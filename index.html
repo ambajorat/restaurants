@@ -657,8 +657,11 @@ async function sendeBewertung(i, sterne, name, text, statusEl){
     });
     if(!res.ok) throw 0;
     (cityBew[body.restaurant_key] ||= []).unshift({sterne, name:body.name, kommentar:body.kommentar, created_at:new Date().toISOString()});
-    offenesPanel = i;
+    offenesPanel = null;          // Formular schließt sich nach dem Absenden
     render();
+    const btn = listeEl.querySelector('.bew-toggle[data-idx="'+i+'"]');
+    if(btn){ const alt = btn.textContent; btn.textContent = '✓ Danke für deine Bewertung!';
+             setTimeout(()=>{ if(btn.isConnected) btn.textContent = alt; }, 4000); }
   }catch(e){ statusEl.textContent='Konnte nicht gesendet werden – bitte später erneut.'; }
 }
 // Klicks im Panel (Sterne wählen, absenden, auf-/zuklappen)
