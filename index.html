@@ -94,22 +94,9 @@ header h1{
 .chip:focus-visible,.filter select:focus-visible,.filter input:focus-visible,
 .schalter input:focus-visible,.knopf:focus-visible,.karte:focus-visible{outline:2px solid var(--akzent); outline-offset:2px}
 
-.websuche{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:0 0 16px}
+.websuche{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:0 0 26px}
 .websuche .knopf{border:none; cursor:pointer}
 .websuche .knopf[disabled]{opacity:.6; cursor:progress}
-.vorschlagbar{display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin:0 0 26px}
-.knopf.ghost{background:transparent; color:var(--akzent); border:1px solid var(--akzent); cursor:pointer}
-.knopf.ghost:hover{background:var(--akzent); color:#0d0d0d}
-#vorschlagPanel{background:var(--leicht); border:1px solid var(--linie); border-radius:10px; padding:18px; margin:0 0 26px}
-#vorschlagPanel h3{margin:0 0 12px; font-family:Cardo,Georgia,serif; font-size:20px}
-.vform{display:flex; flex-direction:column; gap:10px}
-.vform label{display:flex; flex-direction:column; gap:4px; font-size:13px; color:var(--gedimmt)}
-.vform input,.vform select,.vform textarea{
-  font:inherit; font-size:15px; padding:8px 10px; border-radius:6px;
-  border:1px solid var(--linie); background:var(--papier); color:var(--tinte); width:100%;
-}
-.vzeile{display:flex; gap:12px; flex-wrap:wrap}
-.vzeile label{flex:1; min-width:150px}
 
 .liste{display:flex; flex-direction:column}
 .ticket{display:flex; gap:20px; padding:26px 0; border-bottom:1px solid var(--linie)}
@@ -224,39 +211,6 @@ footer.seite a{color:var(--akzent)}
   <span id="osmStatus" class="quelle"></span>
 </div>
 
-<div class="vorschlagbar">
-  <button id="vorschlagBtn" class="knopf ghost">＋ Restaurant vorschlagen</button>
-  <span class="quelle">Wird von André geprüft und dann freigeschaltet.</span>
-</div>
-<div id="vorschlagPanel" hidden>
-  <h3>Restaurant vorschlagen</h3>
-  <div class="vform">
-    <label>Name des Restaurants*<input type="text" id="v_name" maxlength="80" placeholder="z. B. Café Sonne"></label>
-    <label>Stadt*<input type="text" id="v_stadt" maxlength="60" placeholder="z. B. Hamburg"></label>
-    <label>Adresse (Straße + Nr., hilft beim Finden)<input type="text" id="v_adresse" maxlength="120" placeholder="z. B. Musterstraße 1"></label>
-    <div class="vzeile">
-      <label>Zugang
-        <select id="v_zugang">
-          <option value="unknown">weiß nicht</option>
-          <option value="full">stufenlos / mit Rampe</option>
-          <option value="part">mit Stufe / umständlich</option>
-        </select>
-      </label>
-      <label>Barrierefreies WC
-        <select id="v_wc">
-          <option value="unknown">weiß nicht</option>
-          <option value="yes">ja</option>
-          <option value="no">nein</option>
-        </select>
-      </label>
-    </div>
-    <label>Notiz / deine Erfahrung<textarea id="v_notiz" rows="2" maxlength="500" placeholder="z. B. Eingang eben, WC mit Schlüssel am Tresen"></textarea></label>
-    <label>Dein Name (optional)<input type="text" id="v_einreicher" maxlength="60"></label>
-    <div class="bewfoot"><button id="v_submit" class="knopf">Vorschlag senden</button><span id="v_status" class="bewstatus"></span></div>
-    <p class="bewhinweis">Dein Vorschlag wird nicht sofort veröffentlicht, sondern erst nach Prüfung freigeschaltet.</p>
-  </div>
-</div>
-
 <div class="liste" id="liste"></div>
 
 <footer class="seite">
@@ -310,13 +264,35 @@ const HAMBURG = [
   {name:"Café Leonar", district:"Rotherbaum", lat:53.5697536, lon:9.9840813, src:"web", wc:"yes",
    zugang:"Barrierefrei", sitzen:"", toilette:"Rollstuhlgerechtes WC, Schlüssel am Tresen (laut Quelle)"},
   {name:"Dulf's Burger", district:"Winterhude", lat:53.5827757, lon:10.0172024, src:"web", wc:"yes",
-   zugang:"Komplett barrierefrei (laut Quelle)", sitzen:"", toilette:"Barrierefrei (laut Quelle)"}
+   zugang:"Komplett barrierefrei (laut Quelle)", sitzen:"", toilette:"Barrierefrei (laut Quelle)"},
+  {name:"Alsterdorfer Kesselhaus", district:"Alsterdorf", lat:53.6129482, lon:10.0246152, src:"web", wc:"yes",
+   zugang:"Komplett barrierefrei, stufenloser Zugang und barrierefreier Außenbereich (laut Quelle)", sitzen:"", toilette:"Barrierefreies WC im Erdgeschoss (laut Quelle)"},
+  {name:"Maharani", district:"Harvestehude", lat:53.5728581, lon:9.9790580, src:"web", wc:"yes",
+   zugang:"Barrierefreier Zugang über eine Rampe (Haupteingang hat 4 Stufen) (laut Quelle)", sitzen:"", toilette:"Barrierefreies WC (laut Quelle)"},
+  {name:"Café/Restaurant Mirou", district:"Winterhude", lat:53.5803955, lon:10.0120986, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Bistro L'Emir", district:"Winterhude", lat:53.5821694, lon:10.0149139, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Jill", district:"Sternschanze", lat:53.5620270, lon:9.9649097, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Ricebrothers", district:"Sternschanze", lat:53.5605609, lon:9.9630172, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Atelier F", district:"Neustadt", lat:53.5521163, lon:9.9886313, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich, Terrasse am Wasser (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"LüttLiv", district:"Barmbek-Nord", lat:53.5858326, lon:10.0448256, src:"web", wc:"yes",
+   zugang:"Barrierefrei, ebenerdig auf dem Zinnschmelze-Gelände (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Pamukkale", district:"Sternschanze", lat:53.5623968, lon:9.9633614, src:"web", wc:"yes",
+   zugang:"Barrierefrei zugänglich (laut Quelle)", sitzen:"", toilette:"Rollstuhlgerechtes WC (laut Quelle)"},
+  {name:"Feldstern", district:"St. Pauli", lat:53.5581644, lon:9.9673701, src:"web", wc:"limited",
+   zugang:"Ebenerdig, Eingang schmal, davor Kopfsteinpflaster (laut Quelle)", sitzen:"", toilette:"Behinderten-WC vorhanden, aber eng (laut Quelle)"},
+  {name:"Das Eisenstein", district:"Ottensen", lat:53.5543826, lon:9.9270487, src:"web", wc:"unknown",
+   zugang:"Stufenloser Zugang in den Zeisehallen (laut Quelle)", sitzen:"", toilette:"Barrierefreies WC nicht bestätigt – bitte vorab prüfen"}
 ];
 
 const WC_GLYPH = {yes:"✓", limited:"~", no:"✗", unknown:"?"};
 const WC_PILL  = {yes:["ja","WC frei"], limited:["nein","WC eng"], no:["nein","kein WC"], unknown:["nein","WC ?"]};
 const WC_COLOR = {yes:"#ff8a2a", limited:"#ff8a2a", no:"#9a9a94", unknown:"#9a9a94"};
-const SRC_LABEL = {tested:"Selbst getestet", web:"Recherchiert", osm:"OpenStreetMap / Wheelmap", vorschlag:"Nutzervorschlag"};
+const SRC_LABEL = {tested:"Selbst getestet", web:"Recherchiert", osm:"OpenStreetMap / Wheelmap"};
 const SCHNELL = ["Berlin","Köln","München","Frankfurt","Wien","Amsterdam"];
 
 /* ---- Bewertung 1–10 ----
@@ -336,7 +312,7 @@ function scoreOf(r){
   const wcPts = r.wc==='yes'?4 : r.wc==='limited'?2 : 0;
   const zgPts = g==='full'?3 : g==='part'?1.5 : 0;
   const plPts = r.sitzen ? 2 : 0;
-  const stPts = r.src==='tested'?1 : (r.src==='web'||r.src==='vorschlag')?0.5 : 0;
+  const stPts = r.src==='tested'?1 : r.src==='web'?0.5 : 0;
   return Math.round((wcPts+zgPts+plPts+stPts)*10)/10;
 }
 function kriterienZeile(r){
@@ -408,7 +384,7 @@ function setStadt(name, liste, hamburg){
   render();
   if(document.getElementById('kartenBox').style.display !== 'none'){ setTimeout(()=>{map.invalidateSize(); fitAlle();},40); }
   else fitAlle();
-  if(bewertungAktiv()){ ladeBewertungen(name).then(render); mergeVorschlaege(name); }
+  if(bewertungAktiv()) ladeBewertungen(name).then(render);
 }
 function kopf(){
   const ut = document.getElementById('untertitel');
@@ -730,80 +706,6 @@ listeEl.addEventListener('click', e=>{
     sendeBewertung(idx, +(p.dataset.stars||0), p.querySelector('.bewname').value, p.querySelector('.bewtext').value, p.querySelector('.bewstatus'));
     return;
   }
-});
-
-/* =====================================================================
-   RESTAURANT-VORSCHLÄGE (Einreichen durch Besucher, Freigabe durch André)
-   Einmalig im Supabase-SQL-Editor anlegen:
-     create table vorschlaege (
-       id bigint generated always as identity primary key,
-       name text not null, stadt text, adresse text,
-       lat double precision, lon double precision,
-       zugang text, wc text, notiz text, einreicher text,
-       status text not null default 'offen',
-       created_at timestamptz default now()
-     );
-     alter table vorschlaege enable row level security;
-     create policy "vorschlaege_lesen" on vorschlaege for select using (status = 'freigegeben');
-     create policy "vorschlaege_einreichen" on vorschlaege for insert with check (status = 'offen');
-   Freigeben: im Table Editor bei einem Vorschlag status auf 'freigegeben' setzen.
-   ===================================================================== */
-async function geocodeOne(q){
-  try{
-    const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(q)}`);
-    const j = await r.json();
-    if(j.length) return {lat:+j[0].lat, lon:+j[0].lon};
-  }catch(e){}
-  return null;
-}
-async function ladeVorschlaege(stadt){
-  if(!bewertungAktiv()) return [];
-  try{
-    const url = `${SUPABASE_URL}/rest/v1/vorschlaege?select=name,stadt,adresse,lat,lon,zugang,wc,notiz&status=eq.freigegeben&stadt=eq.${encodeURIComponent(stadt)}`;
-    const res = await fetch(url, {headers:{apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY}});
-    if(!res.ok) return [];
-    return (await res.json()).filter(v=>v.lat!=null && v.lon!=null).map(v=>({
-      name:v.name, district:v.adresse||v.stadt||stadt, lat:+v.lat, lon:+v.lon,
-      src:'vorschlag', wc:(v.wc==='yes'||v.wc==='no')?v.wc:'unknown',
-      zg:(v.zugang==='full'||v.zugang==='part')?v.zugang:undefined,
-      zugang: v.notiz || 'Von Nutzer:in vorgeschlagen', sitzen:'', toilette:'', stadt:stadt
-    }));
-  }catch(e){ return []; }
-}
-function mergeVorschlaege(stadt){
-  ladeVorschlaege(stadt).then(vs=>{
-    let neu=0;
-    vs.forEach(v=>{ if(!DATA.some(d=>d.name.toLowerCase()===v.name.toLowerCase())){ DATA.push(v); addMarker(DATA.length-1); neu++; } });
-    if(neu) render();
-  });
-}
-
-// Vorschlags-Formular
-if(!bewertungAktiv()){ const vb=document.querySelector('.vorschlagbar'); if(vb) vb.style.display='none'; }
-const vBtn = document.getElementById('vorschlagBtn');
-const vPanel = document.getElementById('vorschlagPanel');
-vBtn.addEventListener('click', ()=>{
-  vPanel.hidden = !vPanel.hidden;
-  if(!vPanel.hidden){ document.getElementById('v_stadt').value = stadtName; document.getElementById('v_name').focus(); }
-});
-document.getElementById('v_submit').addEventListener('click', async ()=>{
-  const st = document.getElementById('v_status');
-  const g = id => document.getElementById(id).value.trim();
-  const name = g('v_name'), stadt = g('v_stadt');
-  if(!name || !stadt){ st.textContent='Bitte mindestens Name und Stadt angeben.'; return; }
-  if(!bewertungAktiv()){ st.textContent='Vorschläge sind noch nicht aktiviert.'; return; }
-  const adresse = g('v_adresse');
-  st.textContent = 'Wird gesendet …';
-  const geo = await geocodeOne(`${name}, ${adresse} ${stadt}`) || await geocodeOne(`${adresse} ${stadt}`) || await geocodeOne(`${name} ${stadt}`);
-  const body = {name, stadt, adresse, lat:geo?geo.lat:null, lon:geo?geo.lon:null,
-    zugang:g('v_zugang'), wc:g('v_wc'), notiz:g('v_notiz'), einreicher:g('v_einreicher'), status:'offen'};
-  try{
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/vorschlaege`, {method:'POST',
-      headers:{apikey:SUPABASE_KEY, Authorization:'Bearer '+SUPABASE_KEY, 'Content-Type':'application/json', Prefer:'return=minimal'},
-      body: JSON.stringify(body)});
-    if(!res.ok) throw 0;
-    vPanel.innerHTML = '<p style="margin:0">Danke! Dein Vorschlag ist eingegangen und erscheint nach der Prüfung durch André.</p>';
-  }catch(e){ st.textContent = 'Konnte nicht gesendet werden – bitte später erneut.'; }
 });
 
 /* Start: Hamburg */
