@@ -598,5 +598,20 @@
   "score": 6,
   "notiz": "Zugang: rollstuhlgeeignet · Toilette: Behindertentoilette vorhanden",
   "adresse": null
+ },
+ {
+  "id": "hh-fischerhaus",
+  "name": "Fischerhaus",
+  "stadt": "Hamburg",
+  "district": "St. Pauli",
+  "lat": 53.5458919,
+  "lon": 9.9557134,
+  "quelle": "recherchiert",
+  "wc": "barrierefrei",
+  "zugang": "eingeschraenkt",
+  "platz": null,
+  "score": 6,
+  "notiz": "Zugang: rollstuhlgeeignet · Toilette: Behindertentoilette vorhanden",
+  "adresse": null
  }
 ]
