@@ -438,5 +438,15 @@
   "wc": "yes",
   "zugang": "rollstuhlgeeignet",
   "toilette": "Behindertentoilette vorhanden"
+ },
+ {
+  "name": "Fischerhaus",
+  "district": "St. Pauli",
+  "lat": 53.5458919,
+  "lon": 9.9557134,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "rollstuhlgeeignet",
+  "toilette": "Behindertentoilette vorhanden"
  }
 ]
