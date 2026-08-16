@@ -613,5 +613,20 @@
   "score": 6,
   "notiz": "Zugang: rollstuhlgeeignet · Toilette: Behindertentoilette vorhanden",
   "adresse": null
+ },
+ {
+  "id": "hh-cantinetta-ristorante-bar",
+  "name": "cantinetta ristorante & bar",
+  "stadt": "Hamburg",
+  "district": "Speicherstadt",
+  "lat": 53.5437552,
+  "lon": 9.9954557,
+  "quelle": "recherchiert",
+  "wc": "barrierefrei",
+  "zugang": "stufenlos",
+  "platz": null,
+  "score": 7.5,
+  "notiz": "Zugang: barrierefrei (rollstuhlgerechtes Hotel)",
+  "adresse": null
  }
 ]
