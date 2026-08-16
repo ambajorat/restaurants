@@ -1,0 +1,30 @@
+name: hamburg.json aus hamburg-daten.json bauen
+
+# Master ist hamburg-daten.json (Website-Format). Bei jeder Änderung daran wird
+# hamburg.json (App-Format) neu erzeugt und mit committet – Website & App bleiben
+# automatisch synchron, egal wer den Master pflegt (Hand, Claude-Session, Agent).
+on:
+  push:
+    branches: [main]
+    paths: [hamburg-daten.json, baue_hamburg.py]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bauen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: python3 baue_hamburg.py
+      - name: hamburg.json committen (nur wenn geändert)
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add hamburg.json
+          git diff --cached --quiet && echo "unverändert" && exit 0
+          git commit -m "hamburg.json: automatisch aus hamburg-daten.json gebaut"
+          git push
