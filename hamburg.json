@@ -658,5 +658,20 @@
   "score": 3.5,
   "notiz": "Zugang: barrierefrei (rollstuhlgerechtes Hotel)",
   "adresse": null
+ },
+ {
+  "id": "hh-eisenstein",
+  "name": "Eisenstein",
+  "stadt": "Hamburg",
+  "district": "Ottensen",
+  "lat": 53.5543826,
+  "lon": 9.9270487,
+  "quelle": "recherchiert",
+  "wc": "unbekannt",
+  "zugang": "unbekannt",
+  "platz": null,
+  "score": null,
+  "notiz": null,
+  "adresse": null
  }
 ]
