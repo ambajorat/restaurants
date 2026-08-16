@@ -583,5 +583,20 @@
   "score": 5.5,
   "notiz": "Zugang: Nebeneingang Esplanade mit Aufzug (Haupteingang 5 Stufen) (laut Quelle) · Toilette: Behinderten-WC vorhanden, aber enge Kabinentür 62 cm (laut Quelle)",
   "adresse": null
+ },
+ {
+  "id": "hh-hard-rock-cafe",
+  "name": "Hard Rock Café",
+  "stadt": "Hamburg",
+  "district": "St. Pauli",
+  "lat": 53.5484284,
+  "lon": 9.959474,
+  "quelle": "recherchiert",
+  "wc": "barrierefrei",
+  "zugang": "eingeschraenkt",
+  "platz": null,
+  "score": 6,
+  "notiz": "Zugang: rollstuhlgeeignet · Toilette: Behindertentoilette vorhanden",
+  "adresse": null
  }
 ]
