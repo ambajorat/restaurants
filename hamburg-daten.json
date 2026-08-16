@@ -448,5 +448,14 @@
   "wc": "yes",
   "zugang": "rollstuhlgeeignet",
   "toilette": "Behindertentoilette vorhanden"
+ },
+ {
+  "name": "cantinetta ristorante & bar",
+  "district": "Speicherstadt",
+  "lat": 53.5437552,
+  "lon": 9.9954557,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "barrierefrei (rollstuhlgerechtes Hotel)"
  }
 ]
