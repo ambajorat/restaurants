@@ -473,5 +473,13 @@
   "src": "web",
   "wc": "unknown",
   "zugang": "barrierefrei (rollstuhlgerechtes Hotel)"
+ },
+ {
+  "name": "Eisenstein",
+  "district": "Ottensen",
+  "lat": 53.5543826,
+  "lon": 9.9270487,
+  "src": "web",
+  "wc": "unknown"
  }
 ]
