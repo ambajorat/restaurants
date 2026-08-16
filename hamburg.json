@@ -628,5 +628,35 @@
   "score": 7.5,
   "notiz": "Zugang: barrierefrei (rollstuhlgerechtes Hotel)",
   "adresse": null
+ },
+ {
+  "id": "hh-brasserie-flum",
+  "name": "Brasserie Flum",
+  "stadt": "Hamburg",
+  "district": null,
+  "lat": 53.5634104,
+  "lon": 9.9900453,
+  "quelle": "recherchiert",
+  "wc": "barrierefrei",
+  "zugang": "stufenlos",
+  "platz": null,
+  "score": 7.5,
+  "notiz": "Zugang: barrierefrei",
+  "adresse": null
+ },
+ {
+  "id": "hh-1700-winery-bar-im-barcelo-hamburg",
+  "name": "1700 Winery Bar im Barceló Hamburg",
+  "stadt": "Hamburg",
+  "district": null,
+  "lat": 53.5542393,
+  "lon": 10.0008305,
+  "quelle": "recherchiert",
+  "wc": "unbekannt",
+  "zugang": "stufenlos",
+  "platz": null,
+  "score": 3.5,
+  "notiz": "Zugang: barrierefrei (rollstuhlgerechtes Hotel)",
+  "adresse": null
  }
 ]
