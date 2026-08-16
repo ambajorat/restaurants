@@ -465,5 +465,13 @@
   "src": "web",
   "wc": "yes",
   "zugang": "barrierefrei"
+ },
+ {
+  "name": "1700 Winery Bar im Barceló Hamburg",
+  "lat": 53.5542393,
+  "lon": 10.0008305,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "barrierefrei (rollstuhlgerechtes Hotel)"
  }
 ]
