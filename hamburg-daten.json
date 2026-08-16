@@ -457,5 +457,13 @@
   "src": "web",
   "wc": "yes",
   "zugang": "barrierefrei (rollstuhlgerechtes Hotel)"
+ },
+ {
+  "name": "Brasserie Flum",
+  "lat": 53.5634104,
+  "lon": 9.9900453,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "barrierefrei"
  }
 ]
