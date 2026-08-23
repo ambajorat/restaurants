@@ -481,5 +481,149 @@
   "lon": 9.9270487,
   "src": "web",
   "wc": "unknown"
+ },
+ {
+  "name": "Little Amsterdam",
+  "district": "Hoheluft-Ost",
+  "lat": 53.5811943,
+  "lon": 9.9795773,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich, große Terrasse am Isebekkanal (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Alte Liebe",
+  "district": "HafenCity",
+  "lat": 53.5432538,
+  "lon": 9.9999693,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Brücke 10 im Strandhaus",
+  "district": "Othmarschen",
+  "lat": 53.5449153,
+  "lon": 9.8922627,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Ebenerdig zugänglich, Außengastronomie am Elbufer (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "kropkå",
+  "district": "Hoheluft-West",
+  "lat": 53.5801367,
+  "lon": 9.9684988,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Public Coffee Roasters (Winterhude)",
+  "district": "Winterhude",
+  "lat": 53.5800696,
+  "lon": 10.0130597,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Die kleine Konditorei (Osterstraße)",
+  "district": "Eimsbüttel",
+  "lat": 53.5794106,
+  "lon": 9.9462806,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Elbgold (Schanzenhöfe)",
+  "district": "Sternschanze",
+  "lat": 53.5631541,
+  "lon": 9.9669229,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich; Innenhof mit Kopfsteinpflaster (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Zum Anleger",
+  "district": "Wilhelmsburg",
+  "lat": 53.5156621,
+  "lon": 9.9982575,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich, Biergarten direkt am Kanal (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Saliba (Alsterarkaden)",
+  "district": "Neustadt",
+  "lat": 53.5521246,
+  "lon": 9.9922817,
+  "src": "web",
+  "wc": "no",
+  "zg": "part",
+  "zugang": "Sehr kleiner Gastraum – für große Rollstühle eng (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Keine Rollstuhltoilette im Haus – nächstes barrierefreies WC im „Parlament“ (laut Quelle)"
+ },
+ {
+  "name": "Entenwerder1",
+  "district": "Rothenburgsort",
+  "lat": 53.5293462,
+  "lon": 10.037895,
+  "src": "web",
+  "wc": "no",
+  "zugang": "Ponton am Wasser, barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Keine Rollstuhltoilette vorhanden (laut Quelle)"
+ },
+ {
+  "name": "Bar 1910 (Hotel Reichshof)",
+  "district": "St. Georg",
+  "lat": 53.5549375,
+  "lon": 10.0085356,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "Über das Hotel Reichshof zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Rollstuhltoilette vorhanden (laut Quelle)"
+ },
+ {
+  "name": "Weltcafé ElbFaire",
+  "district": "HafenCity",
+  "lat": 53.5427012,
+  "lon": 10.0022808,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich, Innenhof mit großer Terrasse (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "THEO'S Steakhouse (Grand Elysée)",
+  "district": "Rotherbaum",
+  "lat": 53.5633895,
+  "lon": 9.9904213,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei über das Grand Elysée (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Barrierefreies WC auf Ebene E im Grand Elysée – bitte vorab prüfen"
  }
 ]
