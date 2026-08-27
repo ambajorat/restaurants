@@ -868,5 +868,20 @@
   "score": 3.5,
   "notiz": "Zugang: Barrierefrei über das Grand Elysée (laut Quelle) · Toilette: Barrierefreies WC auf Ebene E im Grand Elysée – bitte vorab prüfen",
   "adresse": null
+ },
+ {
+  "id": "hh-alexandros",
+  "name": "Alexandros",
+  "stadt": "Hamburg",
+  "district": null,
+  "lat": 53.5496079,
+  "lon": 9.9946963,
+  "quelle": "recherchiert",
+  "wc": "eingeschraenkt",
+  "zugang": "eingeschraenkt",
+  "platz": null,
+  "score": 4,
+  "notiz": "Zugang: stufenlos",
+  "adresse": null
  }
 ]
