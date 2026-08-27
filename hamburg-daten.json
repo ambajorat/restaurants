@@ -625,5 +625,13 @@
   "zugang": "Barrierefrei über das Grand Elysée (laut Quelle)",
   "sitzen": "",
   "toilette": "Barrierefreies WC auf Ebene E im Grand Elysée – bitte vorab prüfen"
+ },
+ {
+  "name": "Alexandros",
+  "lat": 53.5496079,
+  "lon": 9.9946963,
+  "src": "web",
+  "wc": "limited",
+  "zugang": "stufenlos"
  }
 ]
