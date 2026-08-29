@@ -883,5 +883,20 @@
   "score": 4,
   "notiz": "Zugang: stufenlos",
   "adresse": null
+ },
+ {
+  "id": "hh-ristorante-i-due-amici",
+  "name": "Ristorante i due amici",
+  "stadt": "Hamburg",
+  "district": null,
+  "lat": 53.5127546,
+  "lon": 10.2015554,
+  "quelle": "recherchiert",
+  "wc": "unbekannt",
+  "zugang": "eingeschraenkt",
+  "platz": null,
+  "score": 2,
+  "notiz": "Zugang: stufenlos",
+  "adresse": null
  }
 ]
