@@ -633,5 +633,13 @@
   "src": "web",
   "wc": "limited",
   "zugang": "stufenlos"
+ },
+ {
+  "name": "Ristorante i due amici",
+  "lat": 53.5127546,
+  "lon": 10.2015554,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "stufenlos"
  }
 ]
