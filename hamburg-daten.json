@@ -641,5 +641,49 @@
   "src": "web",
   "wc": "unknown",
   "zugang": "stufenlos"
+ },
+ {
+  "name": "Chapeau! Grill & Bar",
+  "district": "Winterhude",
+  "lat": 53.5843712,
+  "lon": 10.0084824,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Rollstuhltoilette vorhanden (laut Quelle)"
+ },
+ {
+  "name": "Fillet of Soul",
+  "district": "Altstadt (Deichtorhallen)",
+  "lat": 53.5463265,
+  "lon": 10.0062077,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei zugänglich (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Wilhelms im Wälderhaus",
+  "district": "Wilhelmsburg (Inselpark)",
+  "lat": 53.4962161,
+  "lon": 10.0027988,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Barrierefrei, stufenloser Zugang (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Blockbräu",
+  "district": "St. Pauli",
+  "lat": 53.5456447,
+  "lon": 9.9699067,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "Barrierefrei, stufenloser Zugang (laut Quelle)",
+  "sitzen": "",
+  "toilette": "Barrierefreies WC vorhanden (laut Quelle)"
  }
 ]
