@@ -685,5 +685,93 @@
   "zugang": "Barrierefrei, stufenloser Zugang (laut Quelle)",
   "sitzen": "",
   "toilette": "Barrierefreies WC vorhanden (laut Quelle)"
+ },
+ {
+  "name": "Catch of the Day",
+  "district": "HafenCity",
+  "lat": 53.543353,
+  "lon": 9.9998236,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Hamburg Tourismus) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Haerlin (Fairmont Vier Jahreszeiten)",
+  "district": "Neustadt",
+  "lat": 53.5556527,
+  "lon": 9.991455,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Atlantic Restaurant",
+  "district": "St. Georg",
+  "lat": 53.5570776,
+  "lon": 10.0045598,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Heritage (Le Royal Méridien)",
+  "district": "St. Georg",
+  "lat": 53.5583627,
+  "lon": 10.0078898,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Jacobs Restaurant (Hotel Louis C. Jacob)",
+  "district": "Nienstedten",
+  "lat": 53.5503535,
+  "lon": 9.8442544,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "east Restaurant & Bar",
+  "district": "St. Pauli",
+  "lat": 53.5512096,
+  "lon": 9.9655188,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "Reichlich Restaurant",
+  "district": "Harvestehude",
+  "lat": 53.5778207,
+  "lon": 9.9780974,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
+ },
+ {
+  "name": "MASH Hamburg",
+  "district": "Altona-Altstadt",
+  "lat": 53.5445503,
+  "lon": 9.9440426,
+  "src": "web",
+  "wc": "unknown",
+  "zugang": "Als barrierefrei gelistet (Falstaff) (laut Quelle)",
+  "sitzen": "",
+  "toilette": "WC-Angabe unklar – bitte vorab prüfen"
  }
 ]
