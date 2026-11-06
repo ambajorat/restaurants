@@ -1169,5 +1169,16 @@
   "zugang": "Stufenloser Zugang (laut Quelle: OpenStreetMap)",
   "sitzen": "",
   "toilette": "Barrierefreies WC vorhanden (laut Quelle: OpenStreetMap)"
+ },
+ {
+  "name": "HALF THE SKY",
+  "district": "Altona",
+  "lat": 53.5585292,
+  "lon": 9.9383166,
+  "src": "web",
+  "wc": "yes",
+  "zugang": "rollstuhlgerechter Eingang",
+  "sitzen": "entsprechende Sitzplätze vorhanden",
+  "toilette": "rollstuhlgerechtes WC vorhanden"
  }
 ]
