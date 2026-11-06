@@ -1618,5 +1618,20 @@
   "score": 6,
   "notiz": "Zugang: Stufenloser Zugang (laut Quelle: OpenStreetMap) · Toilette: Barrierefreies WC vorhanden (laut Quelle: OpenStreetMap)",
   "adresse": null
+ },
+ {
+  "id": "hh-half-the-sky",
+  "name": "HALF THE SKY",
+  "stadt": "Hamburg",
+  "district": "Altona",
+  "lat": 53.5585292,
+  "lon": 9.9383166,
+  "quelle": "recherchiert",
+  "wc": "barrierefrei",
+  "zugang": "eingeschraenkt",
+  "platz": true,
+  "score": 8,
+  "notiz": "Zugang: rollstuhlgerechter Eingang · Sitzen: entsprechende Sitzplätze vorhanden · Toilette: rollstuhlgerechtes WC vorhanden",
+  "adresse": null
  }
 ]
